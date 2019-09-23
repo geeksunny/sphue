@@ -21,4 +21,4 @@ void loop() {
   // TODO: Perform example operations
 }
 
-#endif
+#endif //SPHUE_EXAMPLE_PROJECT

@@ -1,5 +1,4 @@
 #include "Sphue.h"
-#include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
 #ifdef SPHUE_EXAMPLE_PROJECT
@@ -13,14 +12,14 @@
 
 namespace sphue {
 
-Sphue autoDiscoverHub() {
-  RestClient client(DISCOVER_ADDRESS, DISCOVER_PORT, 1);
+Sphue autoDiscoverHub(const char *hubId) {
+  rested::StreamedSecureRestClient client(DISCOVER_ADDRESS, DISCOVER_PORT);
   StaticJsonDocument<256> doc;
-  RestResponse *result = client.getStreamed("/");
-  int resultCode = result->status();
-  auto error = deserializeJson(doc, *result);
+  auto result = client.get("/");
+  int resultCode = result.statusCode();
+  auto error = deserializeJson(doc, result);
 #ifdef SPHUE_EXAMPLE_PROJECT
-  std::cout << "N-UPnP result code: " << resultCode << " | boolean: " << (*result ? "TRUE" : "FALSE") << std::endl
+  std::cout << "N-UPnP result code: " << resultCode << " | boolean: " << (result ? "TRUE" : "FALSE") << std::endl
             << "JSON Error? " << (error ? "YES!" : "NO") << std::endl;
   if (!error) {
     JsonArray resultArray = doc.as<JsonArray>();
@@ -32,14 +31,15 @@ Sphue autoDiscoverHub() {
     }
   }
 #endif
-  result->finish();
-  if (resultCode == HTTP_CODE_OK) {
+  result.finish();
+  if (resultCode == 200) {
 //    auto error = ARDUINOJSON_NAMESPACE::deserializeJson(json, result);
 //    if (!error) {
 //      return Sphue(nullptr);
 //    }
   }
-  return nullptr;
+//  return nullptr;
+  return Sphue(nullptr);
 }
 
 Sphue::Sphue(const char *hostname) : client_(hostname) {
