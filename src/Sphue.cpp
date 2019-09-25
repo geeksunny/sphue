@@ -5,49 +5,73 @@
 #include <iostream>
 #endif
 
-#define DISCOVER_ADDRESS    "discovery.meethue.com"
-#define DISCOVER_PORT       443
-#define KEY_ID              "id"
-#define KEY_IP_ADDRESS      "internalipaddress"
+// Discovery
+#define DISCOVER_ADDRESS                    "discovery.meethue.com"
+#define DISCOVER_PORT                       443
+#define KEY_ID                              "id"
+#define KEY_IP_ADDRESS                      "internalipaddress"
+// API Endpoints
+// - Create User
+#define ENDPOINT_CREATE_USER                "/api"
+#define CREATE_USER_KEY_DEVICETYPE          "devicetype"
+// - General ...
+#define ENDPOINT_PREFIX                     "/api/"
+#define ENDPOINT_GET_CONFIG                 "/config"
 
 namespace sphue {
+
+inline const char *copyCStr(const char *str) {
+  char *copy = new char[strlen(str) + 1]{};
+  return std::copy(str, str + strlen(str), copy);
+}
 
 Sphue autoDiscoverHub(const char *hubId) {
   rested::StreamedSecureRestClient client(DISCOVER_ADDRESS, DISCOVER_PORT);
   StaticJsonDocument<256> doc;
   auto result = client.get("/");
   int resultCode = result.statusCode();
-  auto error = deserializeJson(doc, result);
-#ifdef SPHUE_EXAMPLE_PROJECT
-  std::cout << "N-UPnP result code: " << resultCode << " | boolean: " << (result ? "TRUE" : "FALSE") << std::endl
-            << "JSON Error? " << (error ? "YES!" : "NO") << std::endl;
-  if (!error) {
-    JsonArray resultArray = doc.as<JsonArray>();
-    std::cout << "JSON Array Size : " << resultArray.size() << std::endl;
-    if (resultArray.size() > 0) {
-      JsonObject record = resultArray.getElement(0).as<JsonObject>();
-      std::cout << "first id found : " << (const char *) record[KEY_ID] << " | first IP found : "
-                << (const char *) record[KEY_IP_ADDRESS] << std::endl;
-    }
-  }
-#endif
-  result.finish();
   if (resultCode == 200) {
-//    auto error = ARDUINOJSON_NAMESPACE::deserializeJson(json, result);
-//    if (!error) {
-//      return Sphue(nullptr);
-//    }
+    auto error = deserializeJson(doc, result);
+    result.finish();
+    if (!error) {
+      JsonArray resultArray = doc.as<JsonArray>();
+      if (resultArray.size() > 0) {
+        JsonObject record = resultArray.getElement(0).as<JsonObject>();
+        // TODO: Should we do something with the ID value?
+        if (record.containsKey(KEY_IP_ADDRESS)) {
+          return Sphue(copyCStr((const char *) record[KEY_IP_ADDRESS]));
+        }
+      }
+      return Sphue(nullptr);
+    }
+  } else {
+    result.finish();
+    return Sphue(nullptr);
   }
-//  return nullptr;
-  return Sphue(nullptr);
 }
 
-Sphue::Sphue(const char *hostname) : client_(hostname) {
-  //
+Sphue::Sphue(const char *apiKey, const char *hostname, int port) : Sphue(hostname, port) {
+  setApiKey(apiKey);
 }
 
 Sphue::Sphue(const char *hostname, int port) : client_(hostname, port) {
   //
+}
+
+const char *Sphue::getApiKey() {
+  return apiKey_;
+}
+
+void Sphue::setApiKey(const char *apiKey) {
+  apiKey_ = apiKey;
+}
+
+Result Sphue::registerDeviceApiKey() {
+  StaticJsonDocument<128> body;
+  //  <application_name>#<device_name>
+  body[CREATE_USER_KEY_DEVICETYPE] = "Lightswitch#switch_control";
+  auto response = client_.post(ENDPOINT_CREATE_USER, "");
+  return Result();
 }
 
 }
