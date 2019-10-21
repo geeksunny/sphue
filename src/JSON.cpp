@@ -5,6 +5,331 @@
 
 namespace json {
 
+int strToInt(String &value) {
+  bool negative = false;
+  int result = 0;
+  int i = 0;
+  if (value[0] == '-') {
+    negative = true;
+    i = 1;
+  }
+  char c;
+  for (; i < value.length(); ++i) {
+    c = value[i];
+    if (!isdigit(c)) {
+      break;
+    }
+    result = (result * 10) + (c - '0');
+  }
+  return (negative) ? -result : result;
+}
+
+
+////////////////////////////////////////////////////////////////
+// Class : JsonParser //////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+JsonParser::JsonParser(Stream &src) : src_(src) {
+  //
+}
+
+
+bool JsonParser::parse(JsonModel &dest) {
+  if (findObject()) {
+    String key;
+    while (findNextKey(key)) {
+      if (!findValue()) {
+        // Cannot find a value after this key!
+        // TODO: How should we handle this situation? skip to end of object and return false?
+      }
+      dest.onKey(key, *this);
+    }
+    if (findChar('}')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+bool JsonParser::findChar(const char find, const bool skipWhitespace) {
+  char next;
+  while (src_.available()) {
+    next = src_.peek();
+    if (skipWhitespace && isspace(next)) {
+      // Skipping occurrences of whitespace characters
+      src_.read();
+    } else {
+      return next == find;
+    }
+  }
+  return false;
+}
+
+
+bool JsonParser::findChar(const char find, const char skipChar, const bool skipWhitespace) {
+  char next;
+  while (src_.available()) {
+    next = src_.peek();
+    if (next == skipChar || (skipWhitespace && isspace(next))) {
+      // Skipping occurrences of `skipChar` and whitespace characters
+      src_.read();
+    } else {
+      return next == find;
+    }
+  }
+  return false;
+}
+
+
+bool JsonParser::findChar(const char find, const char *skipChars, const bool skipWhitespace) {
+  char next;
+  while (src_.available()) {
+    next = src_.peek();
+    if (strchr(skipChars, next) != nullptr || (skipWhitespace && isspace(next))) {
+      // Skipping occurrences of characters in `skipChars` and whitespace characters
+      src_.read();
+    } else {
+      return next == find;
+    }
+  }
+  return false;
+}
+
+
+JsonValueType JsonParser::checkValueType(char firstChar) {
+  switch (firstChar) {
+    case '"':
+      return STRING;
+    case '-':
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      return NUMBER;
+    case '{':
+      return OBJECT;
+    case '[':
+      return ARRAY;
+    case 't':
+    case 'f':
+      return BOOL;
+    case 'n':
+      return NUL;
+    default:
+      return INVALID;
+  }
+}
+
+
+bool JsonParser::findArray() {
+  return findChar('[');
+}
+
+
+bool JsonParser::findObject() {
+  return findChar('{');
+}
+
+
+bool JsonParser::findNextKey(String &dest) {
+  return findChar('"', ',') && getString(dest);
+}
+
+
+bool JsonParser::findValue() {
+  char next;
+  while (src_.available()) {
+    next = src_.peek();
+    if (next == ':' || isspace(next)) {
+      // Skipping occurrences of ':' and whitespace characters
+      src_.read();
+    } else {
+      return true;
+    }
+  }
+  return false;
+}
+
+
+bool JsonParser::readMatches(const char *value, bool case_sensitive) {
+  char srcNext, valueNext;
+  for (int i = 0; value[i] != '\0'; ++i) {
+    if (case_sensitive) {
+      srcNext = src_.peek();
+      valueNext = value[i];
+    } else {
+      srcNext = tolower(src_.peek());
+      valueNext = tolower(value[i]);
+    }
+    if (srcNext != valueNext) {
+      // Next characters don't match; error result.
+      return false;
+    }
+    src_.read();
+  }
+  return true;
+}
+
+
+bool JsonParser::skipValue() {
+  while (src_.available()) {
+    switch (src_.peek()) {
+      case ',':
+      case ']':
+      case '}':
+        return true;
+      default:
+        src_.read();
+    }
+  }
+  return false;
+}
+
+
+bool JsonParser::getBool(bool &dest) {
+  if (src_.available()) {
+    switch (src_.peek()) {
+      case 't':
+        if (readMatches("true")) {
+          dest = true;
+          return true;
+        }
+        break;
+      case 'f':
+        if (readMatches("false")) {
+          dest = false;
+          return true;
+        }
+    }
+    skipValue();
+  }
+  return false;
+}
+
+
+bool JsonParser::getInt(int &dest) {
+  char next;
+  String value;
+  bool foundExponent = false;
+  while (src_.available()) {
+    next = src_.peek();
+    switch (next) {
+      case '-':
+        if (value.length()) {
+          // Sign was not the first character processed. Abort read.
+          goto CHECK_VALUE;
+        }
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        value.concat(src_.read());
+        break;
+      case 'e':
+      case 'E':
+        foundExponent = true;
+      default:
+        goto CHECK_VALUE;
+    }
+  }
+  CHECK_VALUE:
+  if (value.length()) {
+    dest = strToInt(value);
+    if (foundExponent) {
+      int exponent;
+      if (getExponent(exponent)) {
+        // TODO: should long be used since std::pow returns double? is long a good alternative to double here?
+        dest = (int) std::pow(dest, exponent);
+      } else {
+        // TODO: should anything happen if getExponent fails?
+      }
+      skipValue();
+      return true;
+    }
+  }
+  skipValue();
+  return false;
+}
+
+
+bool JsonParser::getExponent(int &dest) {
+  char next;
+  String value;
+  while (src_.available()) {
+    next = src_.peek();
+    switch (next) {
+      case 'e':
+      case 'E':
+      case '+':
+        src_.read();
+        break;
+      case '-':
+        if (value.length()) {
+          // Sign was not the first character processed. Abort read.
+          goto CHECK_VALUE;
+        }
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        value.concat(src_.read());
+        break;
+      default:
+        goto CHECK_VALUE;
+    }
+  }
+  CHECK_VALUE:
+  if (value.length()) {
+    dest = strToInt(value);
+    return true;
+  }
+  return false;
+}
+
+
+bool JsonParser::getString(String &dest) {
+  if (!src_.available() || src_.peek() != '"') {
+    return false;
+  }
+  src_.read();
+  char c;
+  bool ignoreNext = false;
+  while (src_.available()) {
+    c = src_.read();
+    if (c == '\\' && !ignoreNext) {
+      ignoreNext = true;
+      dest.concat(c);
+      continue;
+    }
+    if (c == '"' && !ignoreNext) {
+      return true;
+    } else {
+      dest.concat(c);
+      ignoreNext = false;
+    }
+  }
+  return false;
+}
+
 ////////////////////////////////////////////////////////////////
 // Class : JsonString //////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -20,7 +345,7 @@ const String &JsonString::getValue() const {
 
 
 void JsonString::setValue(String &value) {
-  value_ = false;
+  value_ = value;
 }
 
 

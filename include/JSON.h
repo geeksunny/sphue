@@ -7,6 +7,71 @@
 
 namespace json {
 
+int strToInt(String &value);
+
+
+class JsonParser;
+
+
+enum JsonValueType {
+  INVALID,
+  STRING,
+  NUMBER,
+  OBJECT,
+  ARRAY,
+  BOOL,
+  NUL
+};
+
+
+enum JsonNumberType {
+  INT,
+  DOUBLE,
+  FLOAT
+};
+
+
+class JsonModel {
+  friend class JsonParser;
+
+ private:
+  virtual bool onKey(String &key, JsonParser &parser) = 0;
+};
+
+
+class JsonParser {
+  friend class JsonModel;
+
+ public:
+  explicit JsonParser(Stream &src);
+  bool parse(JsonModel &dest);
+
+ private:
+  Stream &src_;
+
+  bool findChar(char find, bool skipWhitespace = true);
+  bool findChar(char find, char skipChar, bool skipWhitespace = true);
+  bool findChar(char find, const char *skipChars, bool skipWhitespace = true);
+
+  JsonValueType checkValueType(char firstChar);
+
+  bool findArray();
+  bool findObject();
+  bool findNextKey(String &dest);
+  bool findValue();
+  bool readMatches(const char *value, bool case_sensitive = true);
+  bool skipValue();
+
+  bool getBool(bool &dest);
+  bool getInt(int &dest);
+//  bool getDouble(double &dest);
+//  bool getFloat(float &dest);
+  bool getExponent(int &dest);
+  bool getString(String &dest);
+  //bool getHexString(int &dest);
+};
+
+
 class JsonSerializable {
  public:
   virtual String toJson() = 0;
@@ -30,13 +95,6 @@ class JsonBool : public JsonSerializable {
   bool getValue();
   void setValue(bool value);
   String toJson() override;
-};
-
-
-enum JsonNumberType {
-  INT,
-  DOUBLE,
-  FLOAT
 };
 
 
