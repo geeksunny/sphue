@@ -1,9 +1,14 @@
-#include <utility>
 #include <algorithm>
 
 #include "JSON.h"
 
 namespace json {
+
+template<typename T, typename ...Args>
+std::unique_ptr<T> make_unique( Args&& ...args ) {
+  return std::unique_ptr<T>( new T( std::forward<Args>(args)... ) );
+}
+
 
 int strToInt(String &value) {
   bool negative = false;
@@ -552,33 +557,34 @@ String JsonArray<SerializableType>::toJson() {
 // Class : JsonObject //////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-void JsonObject::add(String &key, JsonSerializable value) {
-  values_[key] = std::move(value);
+template<typename T>
+void JsonObject::add(String &key, T &value) {
+  values_[key] = make_unique<T>(value);
 }
 
 
 void JsonObject::add(String &key, String &value) {
-  values_[key] = std::move(JsonString(value));
+  values_[key] = make_unique<JsonString>(value);
 }
 
 
 void JsonObject::add(String &key, bool value) {
-  values_[key] = std::move(JsonBool(value));
+  values_[key] = make_unique<JsonBool>(value);
 }
 
 
 void JsonObject::add(String &key, int value) {
-  values_[key] = std::move(JsonNumber(value));
+  values_[key] = make_unique<JsonNumber>(value);
 }
 
 
 void JsonObject::add(String &key, double value) {
-  values_[key] = std::move(JsonNumber(value));
+  values_[key] = make_unique<JsonNumber>(value);
 }
 
 
 void JsonObject::add(String &key, float value) {
-  values_[key] = std::move(JsonNumber(value));
+  values_[key] = make_unique<JsonNumber>(value);
 }
 
 
@@ -601,7 +607,7 @@ String JsonObject::toJson() {
     result += "\"";
     result += (*it).first;
     result += "\":";
-    result += (*it).second.toJson();
+    result += (*it).second->toJson();
   }
   result += "}";
   return result;

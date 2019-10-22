@@ -2,6 +2,7 @@
 #define SPHUE_INCLUDE_JSON_H_
 
 #include <Stream.h>
+#include <memory>
 #include <deque>
 #include <map>
 
@@ -134,10 +135,12 @@ class JsonArray : public JsonSerializable {
 
 
 class JsonObject : public JsonSerializable {
-  std::map<String, JsonSerializable> values_;
+  std::map<String, std::unique_ptr<JsonSerializable>> values_;
  public:
   JsonObject() = default;
-  void add(String &key, JsonSerializable value);
+
+  template<typename T>
+  void add(String &key, T &value);
   void add(String &key, String &value);
   void add(String &key, bool value);
   void add(String &key, int value);
