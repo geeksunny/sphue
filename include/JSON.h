@@ -58,22 +58,22 @@ class JsonParser {
   bool get(String &dest);
   //bool getHexString(int &dest);
 
+  bool findChar(char find, bool skipWhitespace = true);
+  bool findChar(char find, char skipChar, bool skipWhitespace = true);
+  bool findChar(char find, const char *skipChars, bool skipWhitespace = true);
+
+  bool peekMatches(char c);
   bool readMatches(char c);
   bool readMatches(const char *value, bool case_sensitive = true);
-  bool peekMatches(char c);
   bool skipValue();
 
   template<typename T>
   JsonArrayIterator<T> iterateArray() {
-    return JsonArrayIterator<T>(this);
+    return JsonArrayIterator<T>(*this);
   }
 
  private:
   Stream &src_;
-
-  bool findChar(char find, bool skipWhitespace = true);
-  bool findChar(char find, char skipChar, bool skipWhitespace = true);
-  bool findChar(char find, const char *skipChars, bool skipWhitespace = true);
 
   JsonValueType checkValueType(char firstChar);
 

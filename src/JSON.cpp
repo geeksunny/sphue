@@ -163,6 +163,11 @@ bool JsonParser::findValue() {
 }
 
 
+bool JsonParser::peekMatches(char c) {
+  return src_.available() && src_.peek() == c;
+}
+
+
 bool JsonParser::readMatches(char c) {
   if (src_.available() && src_.peek() == c) {
     src_.read();
@@ -189,11 +194,6 @@ bool JsonParser::readMatches(const char *value, bool case_sensitive) {
     src_.read();
   }
   return true;
-}
-
-
-bool JsonParser::peekMatches(char c) {
-  return src_.available() && src_.peek() == c;
 }
 
 
