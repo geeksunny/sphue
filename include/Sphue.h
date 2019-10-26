@@ -1,7 +1,11 @@
 #ifndef SPHUE_INCLUDE_SPHUE_H_
 #define SPHUE_INCLUDE_SPHUE_H_
 
+#include "Models.h"
 #include <Rested.h>
+
+
+#define SPHUE_APP_NAME        "Sphue"
 
 namespace sphue {
 
@@ -11,6 +15,7 @@ enum ResultCode {
   HUB_BUTTON_NOT_PRESSED_101
 };
 
+// TODO: Refactor to allow multiple result messages per action
 struct Result {
   ResultCode resultCode;
   String result;
@@ -25,7 +30,7 @@ class Sphue {
   const char *getApiKey();
   void setApiKey(const char *apiKey);
 
-  Result registerDeviceApiKey();
+  Result registerDeviceApiKey(const char *deviceName, const char *applicationName = SPHUE_APP_NAME);
 
  private:
   rested::StreamedBasicRestClient client_;

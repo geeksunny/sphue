@@ -1,5 +1,4 @@
 #include "Sphue.h"
-#include <ArduinoJson.h>
 
 #ifdef SPHUE_EXAMPLE_PROJECT
 #include <iostream>
@@ -8,8 +7,6 @@
 // Discovery
 #define DISCOVER_ADDRESS                    "discovery.meethue.com"
 #define DISCOVER_PORT                       443
-#define KEY_ID                              "id"
-#define KEY_IP_ADDRESS                      "internalipaddress"
 // API Endpoints
 // - Create User
 #define ENDPOINT_CREATE_USER                "/api"
@@ -27,27 +24,22 @@ inline const char *copyCStr(const char *str) {
 
 Sphue autoDiscoverHub(const char *hubId) {
   rested::StreamedSecureRestClient client(DISCOVER_ADDRESS, DISCOVER_PORT);
-  StaticJsonDocument<256> doc;
   auto result = client.get("/");
-  int resultCode = result.statusCode();
-  if (resultCode == 200) {
-    auto error = deserializeJson(doc, result);
-    result.finish();
-    if (!error) {
-      JsonArray resultArray = doc.as<JsonArray>();
-      if (resultArray.size() > 0) {
-        JsonObject record = resultArray.getElement(0).as<JsonObject>();
-        // TODO: Should we do something with the ID value?
-        if (record.containsKey(KEY_IP_ADDRESS)) {
-          return Sphue(copyCStr((const char *) record[KEY_IP_ADDRESS]));
-        }
+  if (result.statusCode() == 200) {
+    json::JsonParser parser(result);
+    DiscoveryResponse response;
+    json::JsonArrayIterator<DiscoveryResponse> array = parser.iterateArray<DiscoveryResponse>();
+    while (array.hasNext()) {
+      bool parsed = parser.get(response);
+      if (parsed) {
+        Sphue sphue(response.ip().c_str());
+        result.finish();
+        return sphue;
       }
-      return Sphue(nullptr);
     }
-  } else {
-    result.finish();
-    return Sphue(nullptr);
   }
+  result.finish();
+  return Sphue(nullptr);
 }
 
 Sphue::Sphue(const char *apiKey, const char *hostname, int port) : Sphue(hostname, port) {
@@ -66,11 +58,18 @@ void Sphue::setApiKey(const char *apiKey) {
   apiKey_ = apiKey;
 }
 
-Result Sphue::registerDeviceApiKey() {
-  StaticJsonDocument<128> body;
-  //  <application_name>#<device_name>
-  body[CREATE_USER_KEY_DEVICETYPE] = "Lightswitch#switch_control";
-  auto response = client_.post(ENDPOINT_CREATE_USER, "");
+Result Sphue::registerDeviceApiKey(const char *deviceName, const char *applicationName) {
+  json::JsonObject json;
+  // TODO: Consider possible refactors for JSON and HTTP client libraries for more efficient memory patterns.
+  String key = String(CREATE_USER_KEY_DEVICETYPE);
+  json.add(key, String(applicationName) + "#" + String(deviceName));
+  auto result = client_.post(ENDPOINT_CREATE_USER, json.toJson().c_str());
+  json::JsonParser parser(result);
+  // TODO: parse for result.
+  //  Json will be array with single object with a single key
+  //    - if "error" key exists, failed
+  //    - if "success" key exists, return the value of "success.username"
+  result.finish();
   return Result();
 }
 
