@@ -39,7 +39,7 @@ JsonParser::JsonParser(Stream &src) : src_(src) {
 }
 
 
-bool JsonParser::parse(JsonModel &dest) {
+bool JsonParser::get(JsonModel &dest) {
   if (findObject()) {
     String key;
     while (findNextKey(key)) {
@@ -144,7 +144,7 @@ bool JsonParser::findObject() {
 
 
 bool JsonParser::findNextKey(String &dest) {
-  return findChar('"', ',') && getString(dest);
+  return findChar('"', ',') && get(dest);
 }
 
 
@@ -158,6 +158,15 @@ bool JsonParser::findValue() {
     } else {
       return true;
     }
+  }
+  return false;
+}
+
+
+bool JsonParser::readMatches(char c) {
+  if (src_.available() && src_.peek() == c) {
+    src_.read();
+    return true;
   }
   return false;
 }
@@ -183,6 +192,11 @@ bool JsonParser::readMatches(const char *value, bool case_sensitive) {
 }
 
 
+bool JsonParser::peekMatches(char c) {
+  return src_.available() && src_.peek() == c;
+}
+
+
 bool JsonParser::skipValue() {
   while (src_.available()) {
     switch (src_.peek()) {
@@ -198,7 +212,7 @@ bool JsonParser::skipValue() {
 }
 
 
-bool JsonParser::getBool(bool &dest) {
+bool JsonParser::get(bool &dest) {
   if (src_.available()) {
     switch (src_.peek()) {
       case 't':
@@ -219,7 +233,7 @@ bool JsonParser::getBool(bool &dest) {
 }
 
 
-bool JsonParser::getInt(int &dest) {
+bool JsonParser::get(int &dest) {
   char next;
   String value;
   bool foundExponent = false;
@@ -311,7 +325,7 @@ bool JsonParser::getExponent(int &dest) {
 }
 
 
-bool JsonParser::getString(String &dest) {
+bool JsonParser::get(String &dest) {
   if (!src_.available() || src_.peek() != '"') {
     return false;
   }

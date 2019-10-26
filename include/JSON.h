@@ -14,6 +14,10 @@ int strToInt(String &value);
 class JsonParser;
 
 
+template<typename T>
+class JsonArrayIterator;
+
+
 enum JsonValueType {
   INVALID,
   STRING,
@@ -45,7 +49,24 @@ class JsonParser {
 
  public:
   explicit JsonParser(Stream &src);
-  bool parse(JsonModel &dest);
+
+  bool get(JsonModel &dest);
+  bool get(bool &dest);
+  bool get(int &dest);
+//  bool get(double &dest);
+//  bool get(float &dest);
+  bool get(String &dest);
+  //bool getHexString(int &dest);
+
+  bool readMatches(char c);
+  bool readMatches(const char *value, bool case_sensitive = true);
+  bool peekMatches(char c);
+  bool skipValue();
+
+  template<typename T>
+  JsonArrayIterator<T> iterateArray() {
+    return JsonArrayIterator<T>(this);
+  }
 
  private:
   Stream &src_;
@@ -60,16 +81,35 @@ class JsonParser {
   bool findObject();
   bool findNextKey(String &dest);
   bool findValue();
-  bool readMatches(const char *value, bool case_sensitive = true);
-  bool skipValue();
 
-  bool getBool(bool &dest);
-  bool getInt(int &dest);
-//  bool getDouble(double &dest);
-//  bool getFloat(float &dest);
   bool getExponent(int &dest);
-  bool getString(String &dest);
-  //bool getHexString(int &dest);
+};
+
+
+template<typename T>
+class JsonArrayIterator {
+ public:
+  explicit JsonArrayIterator(JsonParser &parser) : parser_(parser) {
+    hasNext_ = parser_.findChar('[') && parser_.readMatches('[') && !parser_.findChar(']');
+  }
+
+  bool hasNext() {
+    return hasNext_;
+  }
+
+  bool getNext(T &dest) {
+    bool success = parser_.get(dest);
+    hasNext_ = parser_.findChar(',') && parser_.readMatches(',');
+    return success;
+  }
+
+  bool finish() {
+    return parser_.skipValue() && parser_.readMatches(']');
+  }
+
+ private:
+  JsonParser &parser_;
+  bool hasNext_;
 };
 
 
@@ -150,6 +190,7 @@ class JsonObject : public JsonSerializable {
   bool has(String &key);
   String toJson() override;
 };
+
 
 }
 
