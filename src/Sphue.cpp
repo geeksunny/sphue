@@ -58,19 +58,17 @@ void Sphue::setApiKey(const char *apiKey) {
   apiKey_ = apiKey;
 }
 
-Result Sphue::registerDeviceApiKey(const char *deviceName, const char *applicationName) {
+Response<RegisterResponse> Sphue::registerDeviceApiKey(const char *deviceName, const char *applicationName) {
   json::JsonObject json;
   // TODO: Consider possible refactors for JSON and HTTP client libraries for more efficient memory patterns.
   String key = String(CREATE_USER_KEY_DEVICETYPE);
   json.add(key, String(applicationName) + "#" + String(deviceName));
   auto result = client_.post(ENDPOINT_CREATE_USER, json.toJson().c_str());
   json::JsonParser parser(result);
-  // TODO: parse for result.
-  //  Json will be array with single object with a single key
-  //    - if "error" key exists, failed
-  //    - if "success" key exists, return the value of "success.username"
+  Response<RegisterResponse> response;
+  parser.get(response);
   result.finish();
-  return Result();
+  return response;
 }
 
 }

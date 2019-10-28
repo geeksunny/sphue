@@ -21,4 +21,14 @@ const String &DiscoveryResponse::ip() const {
   return ip_;
 }
 
+
+const String &RegisterResponse::username() const {
+  return username_;
+}
+
+
+bool RegisterResponse::onKey(String &key, json::JsonParser &parser) {
+  return (key == "username") ? parser.get(username_) : false;
+}
+
 }

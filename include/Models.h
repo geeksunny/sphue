@@ -5,16 +5,23 @@
 
 namespace sphue {
 
- class DiscoveryResponse : public json::JsonModel {
-  public:
-   const String &id() const;
-   const String &ip() const;
-  private:
-   String id_;
-   String ip_;
+class DiscoveryResponse : public json::JsonModel {
+ public:
+  const String &id() const;
+  const String &ip() const;
+ private:
+  String id_;
+  String ip_;
+  bool onKey(String &key, json::JsonParser &parser) override;
+};
 
-   bool onKey(String &key, json::JsonParser &parser) override;
- };
+class RegisterResponse : public json::JsonModel {
+ public:
+  const String &username() const;
+ private:
+  String username_;
+  bool onKey(String &key, json::JsonParser &parser) override;
+};
 
 }
 
