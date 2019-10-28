@@ -55,6 +55,8 @@ const uint16_t INVALID_STATE                    = 803;
 template<typename T>
 class Response : public json::JsonModel {
  public:
+  explicit Response() = default;
+
   T &operator*() {
     return result_;
   }
@@ -89,6 +91,11 @@ class Response : public json::JsonModel {
   String error_description_;
   T result_;
 
+ private:
+  explicit Response(T &result) : result_(result), result_code_(ResultCode::OK) {
+    //
+  }
+
   bool onKey(String &key, json::JsonParser &parser) override {
     if (key == "success") {
       return parser.get(result_);
@@ -120,11 +127,11 @@ class Sphue {
   const char *apiKey_;
 
   template<typename T>
-  bool parseSingleResponse(Stream &response_stream, T &dest);
+  bool parseSingleResponse(Stream &response_stream, Response<T> &dest);
   template<typename T>
-  bool parseFirstResponse(Stream &response_stream, T &dest);
+  bool parseFirstResponse(Stream &response_stream, Response<T> &dest);
   template<typename T>
-  std::vector<T> parseResponses(Stream &response_stream, int size = 0);
+  std::vector<Response<T>> parseResponses(Stream &response_stream, int size = 0);
 };
 
 Sphue autoDiscoverHub(const char *hubId = nullptr);

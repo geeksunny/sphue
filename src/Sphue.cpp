@@ -58,31 +58,34 @@ void Sphue::setApiKey(const char *apiKey) {
 }
 
 template<typename T>
-bool Sphue::parseSingleResponse(Stream &response_stream, T &dest) {
+bool Sphue::parseSingleResponse(Stream &response_stream, Response<T> &dest) {
   json::JsonParser parser(response_stream);
   if (parser.findArray()) {
-    json::JsonArrayIterator<T> array = parser.iterateArray<T>();
+    json::JsonArrayIterator<Response<T>> array = parser.iterateArray<Response<T>>();
     return array.hasNext() && array.getNext(dest);
   } else {
-    return parser.get(dest);
+    T response;
+    bool success = parser.get(dest);
+    dest = Response<T>(response);
+    return success;
   }
 }
 
 template<typename T>
-bool Sphue::parseFirstResponse(Stream &response_stream, T &dest) {
+bool Sphue::parseFirstResponse(Stream &response_stream, Response<T> &dest) {
   json::JsonParser parser(response_stream);
-  json::JsonArrayIterator<T> array = parser.iterateArray<T>();
+  json::JsonArrayIterator<Response<T>> array = parser.iterateArray<Response<T>>();
   bool success = array.hasNext() && array.getNext(dest);
   return success;
 }
 
 template<typename T>
-std::vector<T> Sphue::parseResponses(Stream &response_stream, int size) {
+std::vector<Response<T>> Sphue::parseResponses(Stream &response_stream, int size) {
   json::JsonParser parser(response_stream);
-  std::vector<T> result(size);
-  json::JsonArrayIterator<T> array = parser.iterateArray<T>();
+  std::vector<Response<T>> result(size);
+  json::JsonArrayIterator<T> array = parser.iterateArray<Response<T>>();
   while (array.hasNext()) {
-    T response;
+    Response<T> response;
     if (array.getNext(response)) {
       result.push_back(response);
     }
