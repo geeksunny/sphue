@@ -13,7 +13,7 @@ std::unique_ptr<T> make_unique( Args&& ...args ) {
 int strToInt(String &value) {
   bool negative = false;
   int result = 0;
-  int i = 0;
+  unsigned int i = 0;
   if (value[0] == '-') {
     negative = true;
     i = 1;
@@ -433,6 +433,8 @@ int JsonNumber::getInt() {
       return (int) double_value_;
     case FLOAT:
       return (int) float_value_;
+    default:
+      return 0;
   }
 }
 
@@ -445,6 +447,8 @@ double JsonNumber::getDouble() {
       return double_value_;
     case FLOAT:
       return float_value_;
+    default:
+      return 0;
   }
 }
 
@@ -457,6 +461,8 @@ float JsonNumber::getFloat() {
       return double_value_;
     case FLOAT:
       return float_value_;
+    default:
+      return 0;
   }
 }
 
@@ -522,6 +528,8 @@ String JsonNumber::toJson() {
     case FLOAT:
       // TODO: add formatting rules for precision?
       return String(float_value_);
+    default:
+      return "";
   }
 }
 
