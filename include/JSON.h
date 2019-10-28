@@ -62,6 +62,9 @@ class JsonParser {
   bool findChar(char find, char skipChar, bool skipWhitespace = true);
   bool findChar(char find, const char *skipChars, bool skipWhitespace = true);
 
+  bool findArray();
+  bool findObject();
+
   bool peekMatches(char c);
   bool readMatches(char c);
   bool readMatches(const char *value, bool case_sensitive = true);
@@ -77,8 +80,6 @@ class JsonParser {
 
   JsonValueType checkValueType(char firstChar);
 
-  bool findArray();
-  bool findObject();
   bool findNextKey(String &dest);
   bool findValue();
 

@@ -30,8 +30,7 @@ Sphue autoDiscoverHub(const char *hubId) {
     DiscoveryResponse response;
     json::JsonArrayIterator<DiscoveryResponse> array = parser.iterateArray<DiscoveryResponse>();
     while (array.hasNext()) {
-      bool parsed = parser.get(response);
-      if (parsed) {
+      if (parser.get(response)) {
         Sphue sphue(response.ip().c_str());
         result.finish();
         return sphue;
@@ -58,15 +57,48 @@ void Sphue::setApiKey(const char *apiKey) {
   apiKey_ = apiKey;
 }
 
+template<typename T>
+bool Sphue::parseSingleResponse(Stream &response_stream, T &dest) {
+  json::JsonParser parser(response_stream);
+  if (parser.findArray()) {
+    json::JsonArrayIterator<T> array = parser.iterateArray<T>();
+    return array.hasNext() && parser.get(dest);
+  } else {
+    return parser.get(dest);
+  }
+}
+
+template<typename T>
+bool Sphue::parseFirstResponse(Stream &response_stream, T &dest) {
+  json::JsonParser parser(response_stream);
+  json::JsonArrayIterator<T> array = parser.iterateArray<T>();
+  bool success = array.hasNext() && parser.get(dest);
+  return success;
+}
+
+template<typename T>
+std::vector<T> Sphue::parseResponses(Stream &response_stream, int size) {
+  json::JsonParser parser(response_stream);
+  std::vector<T> result(size);
+  json::JsonArrayIterator<T> array = parser.iterateArray<T>();
+  while (array.hasNext()) {
+    T response;
+    if (parser.get(response)) {
+      result.push_back(response);
+    }
+  }
+  array.finish();
+  return result;
+}
+
 Response<RegisterResponse> Sphue::registerDeviceApiKey(const char *deviceName, const char *applicationName) {
   json::JsonObject json;
   // TODO: Consider possible refactors for JSON and HTTP client libraries for more efficient memory patterns.
   String key = String(CREATE_USER_KEY_DEVICETYPE);
   json.add(key, String(applicationName) + "#" + String(deviceName));
   auto result = client_.post(ENDPOINT_CREATE_USER, json.toJson().c_str());
-  json::JsonParser parser(result);
   Response<RegisterResponse> response;
-  parser.get(response);
+  parseFirstResponse(result, response);
   result.finish();
   return response;
 }

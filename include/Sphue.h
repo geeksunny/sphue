@@ -68,8 +68,6 @@ class Response : public json::JsonModel {
   }
 };
 
-};
-
 class Sphue {
  public:
   explicit Sphue(const char *apiKey, const char *hostname, int port = 80);
@@ -84,6 +82,12 @@ class Sphue {
   rested::StreamedBasicRestClient client_;
   const char *apiKey_;
 
+  template<typename T>
+  bool parseSingleResponse(Stream &response_stream, T &dest);
+  template<typename T>
+  bool parseFirstResponse(Stream &response_stream, T &dest);
+  template<typename T>
+  std::vector<T> parseResponses(Stream &response_stream, int size = 0);
 };
 
 Sphue autoDiscoverHub(const char *hubId = nullptr);
