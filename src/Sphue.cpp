@@ -30,7 +30,7 @@ Sphue autoDiscoverHub(const char *hubId) {
     DiscoveryResponse response;
     json::JsonArrayIterator<DiscoveryResponse> array = parser.iterateArray<DiscoveryResponse>();
     while (array.hasNext()) {
-      if (parser.get(response)) {
+      if (array.getNext(response)) {
         Sphue sphue(response.ip().c_str());
         result.finish();
         return sphue;
@@ -62,7 +62,7 @@ bool Sphue::parseSingleResponse(Stream &response_stream, T &dest) {
   json::JsonParser parser(response_stream);
   if (parser.findArray()) {
     json::JsonArrayIterator<T> array = parser.iterateArray<T>();
-    return array.hasNext() && parser.get(dest);
+    return array.hasNext() && array.getNext(dest);
   } else {
     return parser.get(dest);
   }
@@ -72,7 +72,7 @@ template<typename T>
 bool Sphue::parseFirstResponse(Stream &response_stream, T &dest) {
   json::JsonParser parser(response_stream);
   json::JsonArrayIterator<T> array = parser.iterateArray<T>();
-  bool success = array.hasNext() && parser.get(dest);
+  bool success = array.hasNext() && array.getNext(dest);
   return success;
 }
 
@@ -83,11 +83,10 @@ std::vector<T> Sphue::parseResponses(Stream &response_stream, int size) {
   json::JsonArrayIterator<T> array = parser.iterateArray<T>();
   while (array.hasNext()) {
     T response;
-    if (parser.get(response)) {
+    if (array.getNext(response)) {
       result.push_back(response);
     }
   }
-  array.finish();
   return result;
 }
 
