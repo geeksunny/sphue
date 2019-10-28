@@ -53,6 +53,12 @@ class JsonParser {
   bool get(JsonModel &dest);
   bool get(bool &dest);
   bool get(int &dest);
+  bool get(uint8_t &dest) {
+    return get((int &) dest);
+  }
+  bool get(uint16_t &dest) {
+    return get((int &) dest);
+  }
 //  bool get(double &dest);
 //  bool get(float &dest);
   bool get(String &dest);
