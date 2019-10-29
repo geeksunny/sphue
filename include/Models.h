@@ -25,6 +25,7 @@ class RegisterResponse : public json::JsonModel {
 
 // TODO: Consider adding build flags for extended model fields, ie IFDEF SPHUE_RESPONSE_EXTENDED
 
+// TODO: Should State be a nested class of Light?
 class State : public json::JsonModel {
   // The following fields have been omitted for simplicity. They can be added in later if desired. //
   // String effect;
