@@ -1,0 +1,22 @@
+{
+  "name": "sphue",
+  "description": "Client library for interfacing with the Philips Hue API on ESP8266 Arduino.",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "authors": {
+    "name": "Justin Swanson",
+    "email": "geeksunny@gmail.com",
+    "url": "https://beepboop.me/"
+  },
+  "version": "0.0.1",
+  "frameworks": "arduino",
+  "platforms": "espressif8266",
+  "dependencies": [
+    {
+      "name": "especially-rested",
+      "version": "https://github.com/geeksunny/especially-rested.git#master"
+    }
+  ]
+}
