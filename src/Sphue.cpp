@@ -9,6 +9,7 @@
 #define DISCOVER_PORT                       443
 // API Endpoints
 // - Create User
+#define ENDPOINT_LIGHTS                     "/lights/"
 #define ENDPOINT_CREATE_USER                "/api"
 #define CREATE_USER_KEY_DEVICETYPE          "devicetype"
 // - General ...
@@ -91,6 +92,23 @@ std::vector<Response<T>> Sphue::parseResponses(Stream &response_stream, int size
     }
   }
   return result;
+}
+
+Response<Lights> Sphue::getAllLights() {
+  auto result = client_.get(ENDPOINT_LIGHTS);
+  Response<Lights> response;
+  parseFirstResponse(result, response);
+  result.finish();
+  return response;
+}
+
+Response<Light> Sphue::getLight(int id) {
+  String endpoint = ENDPOINT_LIGHTS + String(id);
+  auto result = client_.get(endpoint.c_str());
+  Response<Light> response;
+  parseFirstResponse(result, response);
+  result.finish();
+  return response;
 }
 
 Response<RegisterResponse> Sphue::registerDeviceApiKey(const char *deviceName, const char *applicationName) {

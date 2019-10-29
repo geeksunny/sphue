@@ -120,6 +120,9 @@ class Sphue {
   const char *getApiKey();
   void setApiKey(const char *apiKey);
 
+  Response<Lights> getAllLights();
+  Response<Light> getLight(int id);
+
   Response<RegisterResponse> registerDeviceApiKey(const char *deviceName, const char *applicationName = SPHUE_APP_NAME);
 
  private:
