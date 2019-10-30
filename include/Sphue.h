@@ -54,6 +54,8 @@ const uint16_t INVALID_STATE                    = 803;
 
 template<typename T>
 class Response : public json::JsonModel {
+  friend class Sphue;
+
  public:
   explicit Response() = default;
 
@@ -91,7 +93,6 @@ class Response : public json::JsonModel {
   String error_description_;
   T result_;
 
- private:
   explicit Response(T &result) : result_(result), result_code_(ResultCode::OK) {
     //
   }
@@ -122,6 +123,9 @@ class Sphue {
 
   Response<Lights> getAllLights();
   Response<Light> getLight(int id);
+  Response<Lights> renameLight(int id, String &new_name);
+  std::vector<Response<Lights>> setLightState(int id, LightStateChange &change);
+  Response<String> deleteLight(int id);
 
   Response<RegisterResponse> registerDeviceApiKey(const char *deviceName, const char *applicationName = SPHUE_APP_NAME);
 

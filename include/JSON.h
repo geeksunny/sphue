@@ -195,6 +195,7 @@ class JsonObject : public JsonSerializable {
   void add(String &key, float value);
   bool remove(String &key);
   bool has(String &key);
+  int size();
   String toJson() override;
 };
 

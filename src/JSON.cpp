@@ -620,6 +620,11 @@ bool JsonObject::has(String &key) {
 }
 
 
+int JsonObject::size() {
+  return values_.size();
+}
+
+
 String JsonObject::toJson() {
   String result = "{";
   for (auto it = values_.begin(); it != values_.end(); ++it) {

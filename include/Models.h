@@ -78,6 +78,29 @@ class Lights : public json::JsonModel {
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
+class LightStateChange : public json::JsonObject {
+  // The following fields have been omitted for simplicity. They can be added in later if desired. //
+  // float xy[2];
+  // float xy_inc[2];
+  // String alert;
+  // String effect;
+ public:
+  void setOn(bool turned_on);
+  void setBrightness(uint8_t brightness);
+  void setHue(uint16_t hue);
+  void setSaturation(uint8_t saturation);
+  void setColorTemp(uint16_t color_temp);
+  void setTransitionTime(uint16_t time_in_tenths_of_seconds);
+  void incrementBrightness(uint8_t brightness_increment);
+  void decrementBrightness(uint8_t brightness_decrement);
+  void incrementSaturation(uint8_t saturation_increment);
+  void decrementSaturation(uint8_t saturation_decrement);
+  void incrementHue(uint16_t hue_increment);
+  void decrementHue(uint16_t hue_decrement);
+  void incrementColorTemp(uint16_t color_temp_increment);
+  void decrementColorTemp(uint16_t color_temp_decrement);
+};
+
 }
 
 #endif //SPHUE_INCLUDE_MODELS_H_

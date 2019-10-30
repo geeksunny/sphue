@@ -84,7 +84,7 @@ template<typename T>
 std::vector<Response<T>> Sphue::parseResponses(Stream &response_stream, int size) {
   json::JsonParser parser(response_stream);
   std::vector<Response<T>> result(size);
-  json::JsonArrayIterator<T> array = parser.iterateArray<Response<T>>();
+  json::JsonArrayIterator<Response<T>> array = parser.iterateArray<Response<T>>();
   while (array.hasNext()) {
     Response<T> response;
     if (array.getNext(response)) {
@@ -97,7 +97,7 @@ std::vector<Response<T>> Sphue::parseResponses(Stream &response_stream, int size
 Response<Lights> Sphue::getAllLights() {
   auto result = client_.get(ENDPOINT_LIGHTS);
   Response<Lights> response;
-  parseFirstResponse(result, response);
+  parseSingleResponse(result, response);
   result.finish();
   return response;
 }
@@ -106,6 +106,37 @@ Response<Light> Sphue::getLight(int id) {
   String endpoint = ENDPOINT_LIGHTS + String(id);
   auto result = client_.get(endpoint.c_str());
   Response<Light> response;
+  parseSingleResponse(result, response);
+  result.finish();
+  return response;
+}
+
+Response<Lights> Sphue::renameLight(int id, String &new_name) {
+  json::JsonObject json;
+  String key = "name";
+  json.add(key, new_name);
+  String endpoint = ENDPOINT_LIGHTS + String(id);
+  auto result = client_.post(endpoint.c_str(), json.toJson().c_str());
+  // TODO: Determine and change to proper response type
+  Response<Lights> response;
+  parseSingleResponse(result, response);
+  result.finish();
+  return response;
+}
+
+std::vector<Response<Lights>> Sphue::setLightState(int id, LightStateChange &change) {
+  String endpoint = ENDPOINT_LIGHTS + String(id) + "/state";
+  auto result = client_.put(endpoint.c_str(), change.toJson().c_str());
+  // TODO: Determine and change to proper response type
+  std::vector<Response<Lights>> response = parseResponses<Lights>(result, change.size());
+  result.finish();
+  return response;
+}
+
+Response<String> Sphue::deleteLight(int id) {
+  String endpoint = ENDPOINT_LIGHTS + String(id);
+  auto result = client_.del(endpoint.c_str());
+  Response<String> response;
   parseFirstResponse(result, response);
   result.finish();
   return response;
