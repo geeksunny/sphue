@@ -25,8 +25,8 @@ class NamedValue : public json::JsonModel {
   const float getFloat() const;
   const bool getBool() const;
  private:
-  const std::shared_ptr<String> prefix_;
-  Type type_;
+  std::shared_ptr<String> prefix_;
+  Type type_ = Type::UNKNOWN;
   String name_;
   String value_;
   bool onKey(String &key, json::JsonParser &parser) override;

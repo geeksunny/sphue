@@ -111,24 +111,22 @@ Response<Light> Sphue::getLight(int id) {
   return response;
 }
 
-Response<Lights> Sphue::renameLight(int id, String &new_name) {
+Response<NamedValue> Sphue::renameLight(int id, String &new_name) {
   json::JsonObject json;
   String key = "name";
   json.add(key, new_name);
   String endpoint = ENDPOINT_LIGHTS + String(id);
   auto result = client_.post(endpoint.c_str(), json.toJson().c_str());
-  // TODO: Determine and change to proper response type
-  Response<Lights> response;
+  Response<NamedValue> response;
   parseSingleResponse(result, response);
   result.finish();
   return response;
 }
 
-std::vector<Response<Lights>> Sphue::setLightState(int id, LightStateChange &change) {
+std::vector<Response<NamedValue>> Sphue::setLightState(int id, LightStateChange &change) {
   String endpoint = ENDPOINT_LIGHTS + String(id) + "/state";
   auto result = client_.put(endpoint.c_str(), change.toJson().c_str());
-  // TODO: Determine and change to proper response type
-  std::vector<Response<Lights>> response = parseResponses<Lights>(result, change.size());
+  std::vector<Response<NamedValue>> response = parseResponses<NamedValue>(result, change.size());
   result.finish();
   return response;
 }

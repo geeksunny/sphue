@@ -93,7 +93,7 @@ class Response : public json::JsonModel {
   String error_description_;
   T result_;
 
-  explicit Response(T &result) : result_(result), result_code_(ResultCode::OK) {
+  explicit Response(T &result) : result_code_(ResultCode::OK), result_(result) {
     //
   }
 
@@ -123,8 +123,8 @@ class Sphue {
 
   Response<Lights> getAllLights();
   Response<Light> getLight(int id);
-  Response<Lights> renameLight(int id, String &new_name);
-  std::vector<Response<Lights>> setLightState(int id, LightStateChange &change);
+  Response<NamedValue> renameLight(int id, String &new_name);
+  std::vector<Response<NamedValue>> setLightState(int id, LightStateChange &change);
   Response<String> deleteLight(int id);
 
   Response<RegisterResponse> registerDeviceApiKey(const char *deviceName, const char *applicationName = SPHUE_APP_NAME);
