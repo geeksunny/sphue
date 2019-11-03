@@ -102,6 +102,11 @@ bool JsonParser::findChar(const char find, const char *skipChars, const bool ski
 }
 
 
+JsonValueType JsonParser::checkValueType() {
+  return checkValueType(src_.peek());
+}
+
+
 JsonValueType JsonParser::checkValueType(char firstChar) {
   switch (firstChar) {
     case '"':

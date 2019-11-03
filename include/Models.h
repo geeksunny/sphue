@@ -5,6 +5,33 @@
 
 namespace sphue {
 
+class NamedValue : public json::JsonModel {
+ public:
+  NamedValue() = default;
+  explicit NamedValue(std::shared_ptr<String> &prefix);
+  enum Type {
+    UNKNOWN,
+    BOOL,
+    INT,
+    FLOAT,
+    STRING
+  };
+  const String &getPrefix() const;
+  Type getType() const;
+  const String &getName() const;
+  const String getFullName() const;
+  const String &getString() const;
+  const int getInt() const;
+  const float getFloat() const;
+  const bool getBool() const;
+ private:
+  const std::shared_ptr<String> prefix_;
+  Type type_;
+  String name_;
+  String value_;
+  bool onKey(String &key, json::JsonParser &parser) override;
+};
+
 class DiscoveryResponse : public json::JsonModel {
  public:
   const String &id() const;

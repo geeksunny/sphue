@@ -64,9 +64,14 @@ class JsonParser {
   bool get(String &dest);
   //bool getHexString(int &dest);
 
+  bool getAsString(String &dest);
+
   bool findChar(char find, bool skipWhitespace = true);
   bool findChar(char find, char skipChar, bool skipWhitespace = true);
   bool findChar(char find, const char *skipChars, bool skipWhitespace = true);
+
+  JsonValueType checkValueType();
+  JsonValueType checkValueType(char firstChar);
 
   bool findArray();
   bool findObject();
@@ -83,8 +88,6 @@ class JsonParser {
 
  private:
   Stream &src_;
-
-  JsonValueType checkValueType(char firstChar);
 
   bool findNextKey(String &dest);
   bool findValue();
