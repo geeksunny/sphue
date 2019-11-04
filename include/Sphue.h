@@ -122,6 +122,8 @@ class Sphue {
   void setApiKey(const char *apiKey);
 
   Response<Lights> getAllLights();
+  Response<NewLights> getNewLights();
+  Response<NamedValue> searchForNewLights();
   Response<Light> getLight(int id);
   Response<NamedValue> renameLight(int id, String &new_name);
   std::vector<Response<NamedValue>> setLightState(int id, LightStateChange &change);

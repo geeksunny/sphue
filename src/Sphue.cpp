@@ -102,6 +102,23 @@ Response<Lights> Sphue::getAllLights() {
   return response;
 }
 
+Response<NewLights> Sphue::getNewLights() {
+  String endpoint = ENDPOINT_LIGHTS + String("new");
+  auto result = client_.get(endpoint.c_str());
+  Response<NewLights> response;
+  parseSingleResponse(result, response);
+  result.finish();
+  return response;
+}
+
+Response<NamedValue> Sphue::searchForNewLights() {
+  auto result = client_.post(ENDPOINT_LIGHTS, "");
+  Response<NamedValue> response;
+  parseFirstResponse(result, response);
+  result.finish();
+  return response;
+}
+
 Response<Light> Sphue::getLight(int id) {
   String endpoint = ENDPOINT_LIGHTS + String(id);
   auto result = client_.get(endpoint.c_str());
