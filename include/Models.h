@@ -105,6 +105,19 @@ class Lights : public json::JsonModel {
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
+class NewLights : public json::JsonModel {
+ public:
+  std::map<int, String> &operator*();
+  const std::map<int, String> &operator*() const;
+  long lastscan() const;
+  bool isScanning() const;
+ private:
+  long lastscan_;
+  std::map<int, String> lights_;
+  int last_parsed_id_;
+  bool onKey(String &key, json::JsonParser &parser) override;
+};
+
 class LightStateChange : public json::JsonObject {
   // The following fields have been omitted for simplicity. They can be added in later if desired. //
   // float xy[2];

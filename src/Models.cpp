@@ -1,4 +1,5 @@
 #include "Models.h"
+#include <ctime>
 
 namespace sphue {
 
@@ -10,6 +11,25 @@ bool stringHasChar(String &string, char find) {
   }
   return false;
 }
+
+bool timestampFromString(String &time, long &dest) {
+  // `time` should be a datetime string formatted as YYYY-MM-DDThh:mm:ss
+  if (time.length() < 19) {
+    return false;
+  }
+  const char *str = time.c_str();
+  char *end;
+  std::tm t = {};
+  t.tm_year = strtol(&str[0], &end, 10) - 1900;
+  t.tm_mon = strtol(&str[5], &end, 10) - 1;
+  t.tm_mday = strtol(&str[8], &end, 10);
+  t.tm_hour = strtol(&str[11], &end, 10);
+  t.tm_min = strtol(&str[14], &end, 10);
+  t.tm_sec = strtol(&str[17], &end, 10);
+  dest = mktime(&t);
+  return true;
+}
+
 
 ////////////////////////////////////////////////////////////////
 // Class : NamedValue //////////////////////////////////////////
@@ -209,10 +229,63 @@ const std::map<int, Light> &Lights::operator*() const {
 
 
 bool Lights::onKey(String &key, json::JsonParser &parser) {
-  int id = json::strToInt(key);
+  int id = key.toInt();
   Light light;
   bool success = parser.get(light);
   lights_[id] = light;
+  return success;
+}
+
+
+////////////////////////////////////////////////////////////////
+// Class : NewLights ///////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+std::map<int, String> &NewLights::operator*() {
+  return lights_;
+}
+
+
+const std::map<int, String> &NewLights::operator*() const {
+  return lights_;
+}
+
+
+long NewLights::lastscan() const {
+  return lastscan_;
+}
+
+
+bool NewLights::isScanning() const {
+  return lastscan_ == -1;
+}
+
+
+bool NewLights::onKey(String &key, json::JsonParser &parser) {
+  bool success;
+  if (key == "lastscan") {
+    String value;
+    success = parser.get(value);
+    if (success) {
+      if (value == "none") {
+        lastscan_ = 0;
+      } else if (value == "active") {
+        lastscan_ = -1;
+      } else {
+        success = timestampFromString(value, lastscan_);
+      }
+    }
+  } else if (key == "name") {
+    String name;
+    success = parser.get(name);
+    if (success) {
+      lights_[last_parsed_id_] = name;
+      last_parsed_id_ = 0;
+    }
+  } else {
+    last_parsed_id_ = key.toInt();
+    success = parser.get(*this);
+  }
   return success;
 }
 
