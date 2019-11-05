@@ -2,6 +2,7 @@
 #define SPHUE_INCLUDE_MODELS_H_
 
 #include <JSON.h>
+#include <vector>
 
 namespace sphue {
 
@@ -139,6 +140,84 @@ class LightStateChange : public json::JsonObject {
   void decrementHue(uint16_t hue_decrement);
   void incrementColorTemp(uint16_t color_temp_increment);
   void decrementColorTemp(uint16_t color_temp_decrement);
+};
+
+class Group : public json::JsonModel {
+ public:
+  enum class Type {
+    UNKNOWN,
+    LUMINAIRE,
+    LIGHTSOURCE,
+    LIGHT_GROUP,
+    ROOM,
+    ENTERTAINMENT,
+    ZONE
+  };
+  enum class Class {
+    UNKNOWN,
+    LIVING_ROOM,
+    KITCHEN,
+    DINING,
+    BEDROOM,
+    KIDS_BEDROOM,
+    BATHROOM,
+    NURSERY,
+    RECREATION,
+    OFFICE,
+    GYM,
+    HALLWAY,
+    TOILET,
+    FRONT_DOOR,
+    GARAGE,
+    TERRACE,
+    GARDEN,
+    DRIVEWAY,
+    CARPORT,
+    OTHER,
+    HOME,
+    DOWNSTAIRS,
+    UPSTAIRS,
+    TOP_FLOOR,
+    ATTIC,
+    GUEST_ROOM,
+    STAIRCASE,
+    LOUNGE,
+    MAN_CAVE,
+    COMPUTER,
+    STUDIO,
+    MUSIC,
+    TV,
+    READING,
+    CLOSET,
+    STORAGE,
+    LAUNDRY_ROOM,
+    BALCONY,
+    PORCH,
+    BARBECUE,
+    POOL
+  };
+  static Type typeFromString(String &string) ICACHE_FLASH_ATTR;
+  static String typeToString(Type &type) ICACHE_FLASH_ATTR;
+  static Class classFromString(String &string) ICACHE_FLASH_ATTR;
+  static String classToString(Class &a_class) ICACHE_FLASH_ATTR;
+  const String &name() const;
+  const std::vector<int> &lights() const;
+  const std::vector<int> &sensors() const;
+  bool allOn() const;
+  bool anyOn() const;
+  bool recycle() const;
+  const State &action() const;
+ private:
+  String name_;
+  std::vector<int> lights_;
+  std::vector<int> sensors_;
+  Type type_;
+  bool all_on_;
+  bool any_on_;
+  bool recycle_;
+  Class class_;
+  State action_;
+  bool onKey(String &key, json::JsonParser &parser) override;
 };
 
 }
