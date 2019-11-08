@@ -142,6 +142,32 @@ const bool NamedValue::getBool() const {
 
 
 ////////////////////////////////////////////////////////////////
+// Class : ParsedMap ///////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+template<typename K, typename T>
+std::map<K, T> &ParsedMap<K, T>::operator*() {
+  return values_;
+}
+
+
+template<typename K, typename T>
+const std::map<K, T> &ParsedMap<K, T>::operator*() const {
+  return values_;
+}
+
+
+template<typename K, typename T>
+bool ParsedMap<K, T>::onKey(String &key, json::JsonParser &parser) {
+  int id = key.toInt();
+  T value;
+  bool success = parser.get(value);
+  values_[id] = value;
+  return success;
+}
+
+
+////////////////////////////////////////////////////////////////
 // Class : DiscoveryResponse ///////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
@@ -233,41 +259,8 @@ bool Light::onKey(String &key, json::JsonParser &parser) {
 
 
 ////////////////////////////////////////////////////////////////
-// Class : Lights //////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-
-std::map<int, Light> &Lights::operator*() {
-  return lights_;
-}
-
-
-const std::map<int, Light> &Lights::operator*() const {
-  return lights_;
-}
-
-
-bool Lights::onKey(String &key, json::JsonParser &parser) {
-  int id = key.toInt();
-  Light light;
-  bool success = parser.get(light);
-  lights_[id] = light;
-  return success;
-}
-
-
-////////////////////////////////////////////////////////////////
 // Class : NewLights ///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
-
-std::map<int, String> &NewLights::operator*() {
-  return lights_;
-}
-
-
-const std::map<int, String> &NewLights::operator*() const {
-  return lights_;
-}
-
 
 long NewLights::lastscan() const {
   return lastscan_;
@@ -297,7 +290,7 @@ bool NewLights::onKey(String &key, json::JsonParser &parser) {
     String name;
     success = parser.get(name);
     if (success) {
-      lights_[last_parsed_id_] = name;
+      values_[last_parsed_id_] = name;
       last_parsed_id_ = 0;
     }
   } else {
@@ -312,85 +305,85 @@ bool NewLights::onKey(String &key, json::JsonParser &parser) {
 // Class : LightStateChange ////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-void LightStateChange:: setOn(bool turned_on) {
+void LightStateChange::setOn(bool turned_on) {
   String key = "on";
   add(key, turned_on);
 }
 
 
-void LightStateChange:: setBrightness(uint8_t brightness) {
+void LightStateChange::setBrightness(uint8_t brightness) {
   String key = "bri";
   add(key, brightness);
 }
 
 
-void LightStateChange:: setHue(uint16_t hue) {
+void LightStateChange::setHue(uint16_t hue) {
   String key = "hue";
   add(key, hue);
 }
 
 
-void LightStateChange:: setSaturation(uint8_t saturation) {
+void LightStateChange::setSaturation(uint8_t saturation) {
   String key = "sat";
   add(key, saturation);
 }
 
 
-void LightStateChange:: setColorTemp(uint16_t color_temp) {
+void LightStateChange::setColorTemp(uint16_t color_temp) {
   String key = "ct";
   add(key, color_temp);
 }
 
 
-void LightStateChange:: setTransitionTime(uint16_t time_in_tenths_of_seconds) {
+void LightStateChange::setTransitionTime(uint16_t time_in_tenths_of_seconds) {
   String key = "transitiontime";
   add(key, time_in_tenths_of_seconds);
 }
 
 
-void LightStateChange:: incrementBrightness(uint8_t brightness_increment) {
+void LightStateChange::incrementBrightness(uint8_t brightness_increment) {
   String key = "bri_inc";
   add(key, brightness_increment);
 }
 
 
-void LightStateChange:: decrementBrightness(uint8_t brightness_decrement) {
+void LightStateChange::decrementBrightness(uint8_t brightness_decrement) {
   String key = "bri_inc";
   add(key, -brightness_decrement);
 }
 
 
-void LightStateChange:: incrementSaturation(uint8_t saturation_increment) {
+void LightStateChange::incrementSaturation(uint8_t saturation_increment) {
   String key = "sat_inc";
   add(key, saturation_increment);
 }
 
 
-void LightStateChange:: decrementSaturation(uint8_t saturation_decrement) {
+void LightStateChange::decrementSaturation(uint8_t saturation_decrement) {
   String key = "sat_inc";
   add(key, -saturation_decrement);
 }
 
 
-void LightStateChange:: incrementHue(uint16_t hue_increment) {
+void LightStateChange::incrementHue(uint16_t hue_increment) {
   String key = "hue_inc";
   add(key, hue_increment);
 }
 
 
-void LightStateChange:: decrementHue(uint16_t hue_decrement) {
+void LightStateChange::decrementHue(uint16_t hue_decrement) {
   String key = "hue_inc";
   add(key, -hue_decrement);
 }
 
 
-void LightStateChange:: incrementColorTemp(uint16_t color_temp_increment) {
+void LightStateChange::incrementColorTemp(uint16_t color_temp_increment) {
   String key = "ct_inc";
   add(key, color_temp_increment);
 }
 
 
-void LightStateChange:: decrementColorTemp(uint16_t color_temp_decrement) {
+void LightStateChange::decrementColorTemp(uint16_t color_temp_decrement) {
   String key = "ct_inc";
   add(key, -color_temp_decrement);
 }

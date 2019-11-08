@@ -33,6 +33,17 @@ class NamedValue : public json::JsonModel {
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
+template<typename K, typename T>
+class ParsedMap : public json::JsonModel {
+ public:
+  std::map<K, T> &operator*();
+  const std::map<K, T> &operator*() const;
+ protected:
+  std::map<K, T> values_;
+ private:
+  bool onKey(String &key, json::JsonParser &parser) override;
+};
+
 class DiscoveryResponse : public json::JsonModel {
  public:
   const String &id() const;
@@ -97,25 +108,15 @@ class Light : public json::JsonModel {
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
-class Lights : public json::JsonModel {
- public:
-  std::map<int, Light> &operator*();
-  const std::map<int, Light> &operator*() const;
- private:
-  std::map<int, Light> lights_;
-  bool onKey(String &key, json::JsonParser &parser) override;
-};
+typedef ParsedMap<uint8_t, Light> Lights;
 
-class NewLights : public json::JsonModel {
+class NewLights : public ParsedMap<uint8_t, String> {
  public:
-  std::map<int, String> &operator*();
-  const std::map<int, String> &operator*() const;
   long lastscan() const;
   bool isScanning() const;
  private:
-  long lastscan_;
-  std::map<int, String> lights_;
-  int last_parsed_id_;
+  long lastscan_ = 0;
+  int last_parsed_id_ = 0;
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
@@ -219,6 +220,8 @@ class Group : public json::JsonModel {
   State action_;
   bool onKey(String &key, json::JsonParser &parser) override;
 };
+
+typedef ParsedMap<uint8_t, Group> Groups;
 
 }
 
