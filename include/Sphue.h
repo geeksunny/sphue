@@ -121,6 +121,7 @@ class Sphue {
   const char *getApiKey();
   void setApiKey(const char *apiKey);
 
+  // Lights API
   Response<Lights> getAllLights();
   Response<NewLights> getNewLights();
   Response<NamedValue> searchForNewLights();
@@ -129,6 +130,15 @@ class Sphue {
   std::vector<Response<NamedValue>> setLightState(int id, LightStateChange &change);
   Response<String> deleteLight(int id);
 
+  // Groups API
+  Response<Groups> getAllGroups();
+  Response<NamedValue> createGroup(GroupCreationRequest &request);
+  Response<Group> getGroup(int id);
+  std::vector<Response<NamedValue>> setGroupAttributes(int id, GroupAttributeChange &change);
+  std::vector<Response<NamedValue>> setGroupState(int id, GroupStateChange &change);
+  Response<String> deleteGroup(int id);
+
+  // Configuration API
   Response<RegisterResponse> registerDeviceApiKey(const char *deviceName, const char *applicationName = SPHUE_APP_NAME);
 
  private:

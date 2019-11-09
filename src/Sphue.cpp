@@ -10,6 +10,7 @@
 // API Endpoints
 // - Create User
 #define ENDPOINT_LIGHTS                     "/lights/"
+#define ENDPOINT_GROUPS                     "/groups/"
 #define ENDPOINT_CREATE_USER                "/api"
 #define CREATE_USER_KEY_DEVICETYPE          "devicetype"
 // - General ...
@@ -150,6 +151,56 @@ std::vector<Response<NamedValue>> Sphue::setLightState(int id, LightStateChange 
 
 Response<String> Sphue::deleteLight(int id) {
   String endpoint = ENDPOINT_LIGHTS + String(id);
+  auto result = client_.del(endpoint.c_str());
+  Response<String> response;
+  parseFirstResponse(result, response);
+  result.finish();
+  return response;
+}
+
+Response<Groups> Sphue::getAllGroups() {
+  auto result = client_.get(ENDPOINT_GROUPS);
+  Response<Groups> response;
+  parseSingleResponse(result, response);
+  result.finish();
+  return response;
+}
+
+Response<NamedValue> Sphue::createGroup(GroupCreationRequest &request) {
+  auto result = client_.post(ENDPOINT_GROUPS, request.toJson().c_str());
+  Response<NamedValue> response;
+  parseFirstResponse(result, response);
+  result.finish();
+  return response;
+}
+
+Response<Group> Sphue::getGroup(int id) {
+  String endpoint = ENDPOINT_GROUPS + String(id);
+  auto result = client_.get(endpoint.c_str());
+  Response<Group> response;
+  parseSingleResponse(result, response);
+  result.finish();
+  return response;
+}
+
+std::vector<Response<NamedValue>> Sphue::setGroupAttributes(int id, GroupAttributeChange &change) {
+  String endpoint = ENDPOINT_GROUPS + String(id);
+  auto result = client_.post(endpoint.c_str(), change.toJson().c_str());
+  std::vector<Response<NamedValue>> response = parseResponses<NamedValue>(result, change.size());
+  result.finish();
+  return response;
+}
+
+std::vector<Response<NamedValue>> Sphue::setGroupState(int id, GroupStateChange &change) {
+  String endpoint = ENDPOINT_LIGHTS + String(id) + "/action";
+  auto result = client_.put(endpoint.c_str(), change.toJson().c_str());
+  std::vector<Response<NamedValue>> response = parseResponses<NamedValue>(result, change.size());
+  result.finish();
+  return response;
+}
+
+Response<String> Sphue::deleteGroup(int id) {
+  String endpoint = ENDPOINT_GROUPS + String(id);
   auto result = client_.del(endpoint.c_str());
   Response<String> response;
   parseFirstResponse(result, response);

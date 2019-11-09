@@ -223,6 +223,15 @@ class Group : public json::JsonModel {
 
 typedef ParsedMap<uint8_t, Group> Groups;
 
+class GroupCreationRequest : public json::JsonObject {
+};
+
+class GroupAttributeChange : public json::JsonObject {
+};
+
+class GroupStateChange : public json::JsonObject {
+};
+
 }
 
 #endif //SPHUE_INCLUDE_MODELS_H_
