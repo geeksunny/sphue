@@ -138,8 +138,23 @@ class Sphue {
   std::vector<Response<NamedValue>> setGroupState(int id, GroupStateChange &change);
   Response<String> deleteGroup(int id);
 
+  // Scenes API
+  Response<Scenes> getAllScenes();
+  Response<NamedValue> createScene(SceneCreationRequest &request);
+  Response<Scene> getScene(int id);
+  std::vector<Response<NamedValue>> modifyScene(int id, SceneAttributeChange &change);
+  Response<String> deleteScene(int id);
+
   // Configuration API
   Response<RegisterResponse> registerDeviceApiKey(const char *deviceName, const char *applicationName = SPHUE_APP_NAME);
+
+  // TODO : Implement other APIs?
+  //  - Schedules, https://developers.meethue.com/develop/hue-api/3-schedules-api/
+  //  - Sensors, https://developers.meethue.com/develop/hue-api/5-sensors-api/
+  //  - Rules, https://developers.meethue.com/develop/hue-api/6-rules-api/
+  //  - Configuration, https://developers.meethue.com/develop/hue-api/7-configuration-api/
+  //  - Resource links, https://developers.meethue.com/develop/hue-api/9-resourcelinks-api/
+  //  - Capabilities, https://developers.meethue.com/develop/hue-api/10-capabilities-api/
 
   explicit operator bool();
   explicit operator bool() const;

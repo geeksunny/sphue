@@ -232,6 +232,17 @@ class GroupAttributeChange : public json::JsonObject {
 class GroupStateChange : public json::JsonObject {
 };
 
+class Scene : json::JsonModel {
+};
+
+typedef ParsedMap<uint8_t, Scene> Scenes;
+
+class SceneCreationRequest : public json::JsonObject {
+};
+
+class SceneAttributeChange : public json::JsonObject {
+};
+
 }
 
 #endif //SPHUE_INCLUDE_MODELS_H_
