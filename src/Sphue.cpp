@@ -1,4 +1,5 @@
 #include "Sphue.h"
+#include <sstream>
 
 #ifdef SPHUE_EXAMPLE_PROJECT
 #include <iostream>
@@ -9,8 +10,8 @@
 #define DISCOVER_PORT                       443
 // API Endpoints
 // - Create User
-#define ENDPOINT_LIGHTS                     "/lights/"
-#define ENDPOINT_GROUPS                     "/groups/"
+#define ENDPOINT_LIGHTS                     "/lights"
+#define ENDPOINT_GROUPS                     "/groups"
 #define ENDPOINT_CREATE_USER                "/api"
 #define CREATE_USER_KEY_DEVICETYPE          "devicetype"
 // - General ...
@@ -22,6 +23,24 @@ namespace sphue {
 inline const char *copyCStr(const char *str) {
   char *copy = new char[strlen(str) + 1]{};
   return std::copy(str, str + strlen(str), copy);
+}
+
+inline String makeEndpoint(const char *base, int id) {
+  std::stringstream ss;
+  ss << base << "/" << id;
+  return String(ss.str().c_str());
+}
+
+inline String makeEndpoint(const char *base, const char *action) {
+  std::stringstream ss;
+  ss << base << "/" << action;
+  return String(ss.str().c_str());
+}
+
+inline String makeEndpoint(const char *base, int id, const char *action) {
+  std::stringstream ss;
+  ss << base << "/" << id << "/" << action;
+  return String(ss.str().c_str());
 }
 
 Sphue autoDiscoverHub(const char *hubId) {
@@ -104,8 +123,7 @@ Response<Lights> Sphue::getAllLights() {
 }
 
 Response<NewLights> Sphue::getNewLights() {
-  String endpoint = ENDPOINT_LIGHTS + String("new");
-  auto result = client_.get(endpoint.c_str());
+  auto result = client_.get(makeEndpoint(ENDPOINT_LIGHTS, "new").c_str());
   Response<NewLights> response;
   parseSingleResponse(result, response);
   result.finish();
@@ -121,8 +139,7 @@ Response<NamedValue> Sphue::searchForNewLights() {
 }
 
 Response<Light> Sphue::getLight(int id) {
-  String endpoint = ENDPOINT_LIGHTS + String(id);
-  auto result = client_.get(endpoint.c_str());
+  auto result = client_.get(makeEndpoint(ENDPOINT_LIGHTS, id).c_str());
   Response<Light> response;
   parseSingleResponse(result, response);
   result.finish();
@@ -133,8 +150,7 @@ Response<NamedValue> Sphue::renameLight(int id, String &new_name) {
   json::JsonObject json;
   String key = "name";
   json.add(key, new_name);
-  String endpoint = ENDPOINT_LIGHTS + String(id);
-  auto result = client_.post(endpoint.c_str(), json.toJson().c_str());
+  auto result = client_.post(makeEndpoint(ENDPOINT_LIGHTS, id).c_str(), json.toJson().c_str());
   Response<NamedValue> response;
   parseSingleResponse(result, response);
   result.finish();
@@ -142,16 +158,14 @@ Response<NamedValue> Sphue::renameLight(int id, String &new_name) {
 }
 
 std::vector<Response<NamedValue>> Sphue::setLightState(int id, LightStateChange &change) {
-  String endpoint = ENDPOINT_LIGHTS + String(id) + "/state";
-  auto result = client_.put(endpoint.c_str(), change.toJson().c_str());
+  auto result = client_.put(makeEndpoint(ENDPOINT_LIGHTS, id, "state").c_str(), change.toJson().c_str());
   std::vector<Response<NamedValue>> response = parseResponses<NamedValue>(result, change.size());
   result.finish();
   return response;
 }
 
 Response<String> Sphue::deleteLight(int id) {
-  String endpoint = ENDPOINT_LIGHTS + String(id);
-  auto result = client_.del(endpoint.c_str());
+  auto result = client_.del(makeEndpoint(ENDPOINT_LIGHTS, id).c_str());
   Response<String> response;
   parseFirstResponse(result, response);
   result.finish();
@@ -175,8 +189,7 @@ Response<NamedValue> Sphue::createGroup(GroupCreationRequest &request) {
 }
 
 Response<Group> Sphue::getGroup(int id) {
-  String endpoint = ENDPOINT_GROUPS + String(id);
-  auto result = client_.get(endpoint.c_str());
+  auto result = client_.get(makeEndpoint(ENDPOINT_GROUPS, id).c_str());
   Response<Group> response;
   parseSingleResponse(result, response);
   result.finish();
@@ -184,24 +197,21 @@ Response<Group> Sphue::getGroup(int id) {
 }
 
 std::vector<Response<NamedValue>> Sphue::setGroupAttributes(int id, GroupAttributeChange &change) {
-  String endpoint = ENDPOINT_GROUPS + String(id);
-  auto result = client_.post(endpoint.c_str(), change.toJson().c_str());
+  auto result = client_.post(makeEndpoint(ENDPOINT_GROUPS, id).c_str(), change.toJson().c_str());
   std::vector<Response<NamedValue>> response = parseResponses<NamedValue>(result, change.size());
   result.finish();
   return response;
 }
 
 std::vector<Response<NamedValue>> Sphue::setGroupState(int id, GroupStateChange &change) {
-  String endpoint = ENDPOINT_LIGHTS + String(id) + "/action";
-  auto result = client_.put(endpoint.c_str(), change.toJson().c_str());
+  auto result = client_.put(makeEndpoint(ENDPOINT_GROUPS, id, "action").c_str(), change.toJson().c_str());
   std::vector<Response<NamedValue>> response = parseResponses<NamedValue>(result, change.size());
   result.finish();
   return response;
 }
 
 Response<String> Sphue::deleteGroup(int id) {
-  String endpoint = ENDPOINT_GROUPS + String(id);
-  auto result = client_.del(endpoint.c_str());
+  auto result = client_.del(makeEndpoint(ENDPOINT_GROUPS, id).c_str());
   Response<String> response;
   parseFirstResponse(result, response);
   result.finish();
