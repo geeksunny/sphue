@@ -141,6 +141,9 @@ class Sphue {
   // Configuration API
   Response<RegisterResponse> registerDeviceApiKey(const char *deviceName, const char *applicationName = SPHUE_APP_NAME);
 
+  explicit operator bool();
+  explicit operator bool() const;
+
  private:
   rested::StreamedBasicRestClient client_;
   const char *apiKey_;

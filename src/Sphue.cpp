@@ -27,19 +27,19 @@ inline const char *copyCStr(const char *str) {
 
 inline String makeEndpoint(const char *base, int id) {
   std::stringstream ss;
-  ss << base << "/" << id;
+  ss << base << '/' << id;
   return String(ss.str().c_str());
 }
 
 inline String makeEndpoint(const char *base, const char *action) {
   std::stringstream ss;
-  ss << base << "/" << action;
+  ss << base << '/' << action;
   return String(ss.str().c_str());
 }
 
 inline String makeEndpoint(const char *base, int id, const char *action) {
   std::stringstream ss;
-  ss << base << "/" << id << "/" << action;
+  ss << base << '/' << id << '/' << action;
   return String(ss.str().c_str());
 }
 
@@ -228,6 +228,14 @@ Response<RegisterResponse> Sphue::registerDeviceApiKey(const char *deviceName, c
   parseFirstResponse(result, response);
   result.finish();
   return response;
+}
+
+Sphue::operator bool() {
+  return (bool) client_;
+}
+
+Sphue::operator bool() const {
+  return (bool) client_;
 }
 
 }

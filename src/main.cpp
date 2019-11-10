@@ -3,6 +3,8 @@
 #include "WifiTools.h"
 #include "Sphue.h"
 
+sphue::Sphue api(nullptr);
+
 void setup() {
   Serial.begin(BAUD_RATE);
   delay(3000);  // Give serial console a chance to get ready
@@ -11,7 +13,7 @@ void setup() {
   bool connected = wifi_tools::startClient();
   delay(5);
   if (connected) {
-    sphue::autoDiscoverHub();
+    api = sphue::autoDiscoverHub();
   } else {
     Serial.println("Couldn't connect to wifi!");
   }
@@ -19,6 +21,9 @@ void setup() {
 
 void loop() {
   // TODO: Perform example operations
+  if (api) {
+    //
+  }
 }
 
 #endif //SPHUE_EXAMPLE_PROJECT
