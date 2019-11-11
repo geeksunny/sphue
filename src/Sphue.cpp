@@ -12,6 +12,7 @@
 // - Create User
 #define ENDPOINT_LIGHTS                     "lights"
 #define ENDPOINT_GROUPS                     "groups"
+#define ENDPOINT_SCENES                     "scenes"
 #define ENDPOINT_CREATE_USER                "/api"
 #define CREATE_USER_KEY_DEVICETYPE          "devicetype"
 
@@ -122,8 +123,7 @@ template<typename T, typename... Endpoint>
 Response<T> Sphue::post(json::JsonObject *body, Endpoint... args) {
   auto result = client_.post(makeEndpoint(args...).c_str(), (body ? body->toJson().c_str() : ""));
   Response<T> response;
-//  parseFirstResponse(result, response);
-  parseSingleResponse(result, response);
+  parseFirstResponse(result, response);
   result.finish();
   return response;
 }
@@ -206,6 +206,26 @@ std::vector<Response<NamedValue>> Sphue::setGroupState(int id, GroupStateChange 
 
 Response<String> Sphue::deleteGroup(int id) {
   return del(ENDPOINT_GROUPS, id);
+}
+
+Response<Scenes> Sphue::getAllScenes() {
+  return get<Scenes>(ENDPOINT_SCENES);
+}
+
+Response<NamedValue> Sphue::createScene(SceneCreationRequest &request) {
+  return post<NamedValue>(&request, ENDPOINT_SCENES);
+}
+
+Response<Scene> Sphue::getScene(int id) {
+  return get<Scene>(ENDPOINT_SCENES, id);
+}
+
+std::vector<Response<NamedValue>> Sphue::modifyScene(int id, SceneAttributeChange &change) {
+  return post(&change, ENDPOINT_SCENES, id);
+}
+
+Response<String> Sphue::deleteScene(int id) {
+  return del(ENDPOINT_SCENES, id);
 }
 
 Response<RegisterResponse> Sphue::registerDeviceApiKey(const char *deviceName, const char *applicationName) {

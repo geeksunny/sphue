@@ -232,7 +232,8 @@ class GroupAttributeChange : public json::JsonObject {
 class GroupStateChange : public json::JsonObject {
 };
 
-class Scene : json::JsonModel {
+class Scene : public json::JsonModel {
+  bool onKey(String &key, json::JsonParser &parser) override;
 };
 
 typedef ParsedMap<uint8_t, Scene> Scenes;
