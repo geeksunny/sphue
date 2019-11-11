@@ -169,6 +169,23 @@ class Sphue {
   bool parseFirstResponse(Stream &response_stream, Response<T> &dest);
   template<typename T>
   std::vector<Response<T>> parseResponses(Stream &response_stream, int size = 0);
+
+  String buildEndpoint(std::stringstream &string_builder);
+  template<typename T, typename... Args>
+  String buildEndpoint(std::stringstream &string_builder, T &value, Args&... args);
+  template<typename... Args>
+  String makeEndpoint(Args&... args);
+
+  template<typename T, typename... Endpoint>
+  Response<T> get(Endpoint... args);
+  template<typename T, typename... Endpoint>
+  Response<T> post(json::JsonObject *body, Endpoint... args);
+  template<typename... Endpoint>
+  std::vector<Response<NamedValue>> post(json::JsonObject *body, Endpoint... args);
+  template<typename... Endpoint>
+  std::vector<Response<NamedValue>> put(json::JsonObject *body, Endpoint... args);
+  template<typename... Endpoint>
+  Response<String> del(Endpoint... args);
 };
 
 Sphue autoDiscoverHub(const char *hubId = nullptr);
