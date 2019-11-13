@@ -40,8 +40,25 @@ class ParsedMap : public json::JsonModel {
   const std::map<K, T> &operator*() const;
  protected:
   std::map<K, T> values_;
+  virtual inline K getKey(String &from) = 0;
  private:
   bool onKey(String &key, json::JsonParser &parser) override;
+};
+
+template<typename T>
+class ParsedIntMap : public ParsedMap<uint8_t, T> {
+ protected:
+  uint8_t getKey(String &from) override {
+    return from.toInt();
+  }
+};
+
+template<typename T>
+class ParsedStringMap : public ParsedMap<String, T> {
+ protected:
+  String getKey(String &from) override {
+    return from;
+  }
 };
 
 class DiscoveryResponse : public json::JsonModel {
@@ -108,9 +125,9 @@ class Light : public json::JsonModel {
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
-typedef ParsedMap<uint8_t, Light> Lights;
+typedef ParsedIntMap<Light> Lights;
 
-class NewLights : public ParsedMap<uint8_t, String> {
+class NewLights : public ParsedIntMap<String> {
  public:
   long lastscan() const;
   bool isScanning() const;
@@ -221,7 +238,7 @@ class Group : public json::JsonModel {
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
-typedef ParsedMap<uint8_t, Group> Groups;
+typedef ParsedIntMap<Group> Groups;
 
 class GroupCreationRequest : public json::JsonObject {
 };
@@ -236,7 +253,7 @@ class Scene : public json::JsonModel {
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
-typedef ParsedMap<uint8_t, Scene> Scenes;
+typedef ParsedStringMap<Scene> Scenes;
 
 class SceneCreationRequest : public json::JsonObject {
 };

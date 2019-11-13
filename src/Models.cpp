@@ -159,10 +159,9 @@ const std::map<K, T> &ParsedMap<K, T>::operator*() const {
 
 template<typename K, typename T>
 bool ParsedMap<K, T>::onKey(String &key, json::JsonParser &parser) {
-  int id = key.toInt();
   T value;
   bool success = parser.get(value);
-  values_[id] = value;
+  values_[getKey(key)] = value;
   return success;
 }
 
