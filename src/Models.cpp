@@ -33,7 +33,7 @@ bool timestampFromString(String &time, long &dest) {
   return true;
 }
 
-bool parseArrayOfIntStrings(json::JsonParser &parser, std::vector<int> &dest) {
+bool parseArrayOfIntStrings(json::JsonParser &parser, std::vector<uint8_t> &dest) {
   if (parser.checkValueType() != json::ARRAY) {
     parser.skipValue();
     return false;
@@ -514,12 +514,12 @@ const String &Group::name() const {
 }
 
 
-const std::vector<int> &Group::lights() const {
+const std::vector<uint8_t> &Group::lights() const {
   return lights_;
 }
 
 
-const std::vector<int> &Group::sensors() const {
+const std::vector<uint8_t> &Group::sensors() const {
   return sensors_;
 }
 
@@ -571,6 +571,73 @@ bool Group::onKey(String &key, json::JsonParser &parser) {
     return success;
   } else if (key == "action") {
     return parser.get(action_);
+  }
+  return false;
+}
+
+////////////////////////////////////////////////////////////////
+// Class : Scene ///////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+Scene::Type Scene::typeFromString(String &string) {
+  IF_EQ_RET(string, "LightScene", Type::LIGHT_SCENE)
+  IF_EQ_RET(string, "GroupScene", Type::GROUP_SCENE);
+  // else
+  return Type::UNKNOWN;
+}
+
+String Scene::typeToString(Scene::Type &type) {
+  switch (type) {
+    CASE_RETURN(Type::LIGHT_SCENE, "LightScene");
+    CASE_RETURN(Type::GROUP_SCENE, "GroupScene");
+    default:
+      return "Unknown";
+  }
+}
+
+const String &Scene::name() const {
+  return name_;
+}
+
+Scene::Type Scene::type() const {
+  return type_;
+}
+
+uint8_t Scene::group() const {
+  return group_;
+}
+
+const std::vector<uint8_t> &Scene::lights() const {
+  return lights_;
+}
+
+bool Scene::recycle() const {
+  return recycle_;
+}
+
+bool Scene::locked() const {
+  return locked_;
+}
+
+bool Scene::onKey(String &key, json::JsonParser &parser) {
+  if (key == "name") {
+    return parser.get(name_);
+  } else if (key == "type") {
+    String type;
+    bool success = parser.get(type);
+    type_ = typeFromString(type);
+    return success;
+  } else if (key == "group") {
+    String group;
+    bool success = parser.get(group);
+    group_ = group.toInt();
+    return success;
+  } else if (key == "lights") {
+    return parseArrayOfIntStrings(parser, lights_);
+  } else if (key == "recycle") {
+    return parser.get(recycle_);
+  } else if (key == "locked") {
+    return parser.get(locked_);
   }
   return false;
 }

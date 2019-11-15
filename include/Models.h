@@ -219,16 +219,16 @@ class Group : public json::JsonModel {
   static Class classFromString(String &string) ICACHE_FLASH_ATTR;
   static String classToString(Class &a_class) ICACHE_FLASH_ATTR;
   const String &name() const;
-  const std::vector<int> &lights() const;
-  const std::vector<int> &sensors() const;
+  const std::vector<uint8_t> &lights() const;
+  const std::vector<uint8_t> &sensors() const;
   bool allOn() const;
   bool anyOn() const;
   bool recycle() const;
   const State &action() const;
  private:
   String name_;
-  std::vector<int> lights_;
-  std::vector<int> sensors_;
+  std::vector<uint8_t> lights_;
+  std::vector<uint8_t> sensors_;
   Type type_;
   bool all_on_;
   bool any_on_;
@@ -250,6 +250,33 @@ class GroupStateChange : public json::JsonObject {
 };
 
 class Scene : public json::JsonModel {
+  // The following fields have been omitted for simplicity. They can be added in later if desired. //
+  // String owner_;
+  // appdata : { version: uint8_t, data: String }
+  // String picture_;
+  // long last_updated_;
+  // uint8_t version_;
+ public:
+  enum class Type {
+    UNKNOWN,
+    LIGHT_SCENE,
+    GROUP_SCENE
+  };
+  static Type typeFromString(String &string) ICACHE_FLASH_ATTR;
+  static String typeToString(Type &type) ICACHE_FLASH_ATTR;
+  const String &name() const;
+  Type type() const;
+  uint8_t group() const;
+  const std::vector<uint8_t> &lights() const;
+  bool recycle() const;
+  bool locked() const;
+ private:
+  String name_;
+  Type type_;
+  uint8_t group_;
+  std::vector<uint8_t> lights_;
+  bool recycle_;
+  bool locked_;
   bool onKey(String &key, json::JsonParser &parser) override;
 };
 
