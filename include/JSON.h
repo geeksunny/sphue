@@ -136,6 +136,8 @@ class JsonString : public JsonSerializable {
   const String &getValue() const;
   void setValue(String &value);
   String toJson() override;
+  bool operator==(const JsonString &rhs) const;
+  bool operator!=(const JsonString &rhs) const;
 };
 
 
@@ -146,6 +148,8 @@ class JsonBool : public JsonSerializable {
   bool getValue();
   void setValue(bool value);
   String toJson() override;
+  bool operator==(const JsonBool &rhs) const;
+  bool operator!=(const JsonBool &rhs) const;
 };
 
 
@@ -169,6 +173,9 @@ class JsonNumber : public JsonSerializable {
   void setType(JsonNumberType type);
 
   String toJson() override;
+
+  bool operator==(const JsonNumber &rhs) const;
+  bool operator!=(const JsonNumber &rhs) const;
 };
 
 
@@ -181,6 +188,8 @@ class JsonArray : public JsonSerializable {
   void add(SerializableType &value);
   bool remove(SerializableType &value);
   String toJson() override;
+  bool operator==(const JsonArray &rhs) const;
+  bool operator!=(const JsonArray &rhs) const;
 };
 
 
@@ -200,6 +209,8 @@ class JsonObject : public JsonSerializable {
   bool has(String &key);
   int size();
   String toJson() override;
+  bool operator==(const JsonObject &rhs) const;
+  bool operator!=(const JsonObject &rhs) const;
 };
 
 

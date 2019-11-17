@@ -378,6 +378,16 @@ String JsonString::toJson() {
 }
 
 
+bool JsonString::operator==(const JsonString &rhs) const {
+  return value_ == rhs.value_;
+}
+
+
+bool JsonString::operator!=(const JsonString &rhs) const {
+  return value_ != rhs.value_;
+}
+
+
 ////////////////////////////////////////////////////////////////
 // Class : JsonBool ////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -399,6 +409,16 @@ void JsonBool::setValue(bool value) {
 
 String JsonBool::toJson() {
   return value_ ? "true" : "false";
+}
+
+
+bool JsonBool::operator==(const JsonBool &rhs) const {
+  return value_ == rhs.value_;
+}
+
+
+bool JsonBool::operator!=(const JsonBool &rhs) const {
+  return value_ != rhs.value_;
 }
 
 
@@ -539,6 +559,26 @@ String JsonNumber::toJson() {
 }
 
 
+bool JsonNumber::operator==(const JsonNumber &rhs) const {
+  if (type_ == rhs.type_) {
+    switch (rhs.type_) {
+      case INT:
+        return int_value_ == rhs.int_value_;
+      case DOUBLE:
+        return double_value_ == rhs.double_value_;
+      case FLOAT:
+        return float_value_ == rhs.float_value_;
+    }
+  }
+  return false;
+}
+
+
+bool JsonNumber::operator!=(const JsonNumber &rhs) const {
+  return !(rhs == *this);
+}
+
+
 ////////////////////////////////////////////////////////////////
 // Class : JsonArray ///////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -577,6 +617,18 @@ String JsonArray<SerializableType>::toJson() {
   }
   result += "]";
   return result;
+}
+
+
+template<typename SerializableType>
+bool JsonArray<SerializableType>::operator==(const JsonArray &rhs) const {
+  return values_ == rhs.values_;
+}
+
+
+template<typename SerializableType>
+bool JsonArray<SerializableType>::operator!=(const JsonArray &rhs) const {
+  return !(rhs == *this);
 }
 
 
@@ -643,6 +695,16 @@ String JsonObject::toJson() {
   }
   result += "}";
   return result;
+}
+
+
+bool JsonObject::operator==(const JsonObject &rhs) const {
+  return values_ == rhs.values_;
+}
+
+
+bool JsonObject::operator!=(const JsonObject &rhs) const {
+  return !(rhs == *this);
 }
 
 }
