@@ -262,7 +262,15 @@ class GroupCreationRequest : public BuildableObject {
   json::JsonArray<json::JsonString> lights_;
 };
 
-class GroupAttributeChange : public json::JsonObject {
+class GroupAttributeChange : public BuildableObject {
+ public:
+  GroupAttributeChange &addLight(int light_id);
+  GroupAttributeChange &removeLight(int light_id);
+  GroupAttributeChange &setName(String &name);
+  GroupAttributeChange &setRoomClass(Group::Class a_class);
+  void build() override;
+ private:
+  json::JsonArray<json::JsonString> lights_;
 };
 
 class GroupStateChange : public json::JsonObject {

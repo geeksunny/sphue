@@ -635,17 +635,61 @@ GroupCreationRequest &GroupCreationRequest::setRoomClass(Group::Class a_class) {
   // Set type to ROOM
   String key = "type";
   Group::Type type = Group::Type::ROOM;
-  String value_string = Group::typeToString(type);
-  add(key, value_string);
+  String value = Group::typeToString(type);
+  add(key, value);
   // Populate value of class
   key = "class";
-  value_string = Group::classToString(a_class);
-  add(key, value_string);
+  value = Group::classToString(a_class);
+  add(key, value);
   return *this;
 }
 
 
 void GroupCreationRequest::build() {
+  String key = "lights";
+  if (has(key)) {
+    remove(key);
+  }
+  add(key, lights_);
+}
+
+
+////////////////////////////////////////////////////////////////
+// Class : GroupAttributeChange ////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+GroupAttributeChange &GroupAttributeChange::addLight(int light_id) {
+  String light_string(light_id);
+  json::JsonString value(light_string);
+  lights_.add(value);
+  return *this;
+}
+
+
+GroupAttributeChange &GroupAttributeChange::removeLight(int light_id) {
+  String light_string(light_id);
+  json::JsonString value(light_string);
+  lights_.remove(value);
+  return *this;
+}
+
+
+GroupAttributeChange &GroupAttributeChange::setName(String &name) {
+  String key = "name";
+  add(key, name);
+  return *this;
+}
+
+
+GroupAttributeChange &GroupAttributeChange::setRoomClass(Group::Class a_class) {
+  String key = "class";
+  String value = Group::classToString(a_class);
+  add(key, value);
+  return *this;
+}
+
+
+void GroupAttributeChange::build() {
   String key = "lights";
   if (has(key)) {
     remove(key);
