@@ -61,6 +61,16 @@ class ParsedStringMap : public ParsedMap<String, T> {
   }
 };
 
+class BuildableObject : public json::JsonObject {
+ public:
+  String toJson() override {
+    build();
+    return JsonObject::toJson();
+  }
+ private:
+  virtual void build() = 0;
+};
+
 class DiscoveryResponse : public json::JsonModel {
  public:
   const String &id() const;
@@ -240,7 +250,16 @@ class Group : public json::JsonModel {
 
 typedef ParsedIntMap<Group> Groups;
 
-class GroupCreationRequest : public json::JsonObject {
+class GroupCreationRequest : public BuildableObject {
+ public:
+  GroupCreationRequest &addLight(int light_id);
+  GroupCreationRequest &removeLight(int light_id);
+  GroupCreationRequest &setName(String &name);
+  GroupCreationRequest &setType(Group::Type type);
+  GroupCreationRequest &setRoomClass(Group::Class a_class);
+  void build() override;
+ private:
+  json::JsonArray<json::JsonString> lights_;
 };
 
 class GroupAttributeChange : public json::JsonObject {
