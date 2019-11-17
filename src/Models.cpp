@@ -304,87 +304,101 @@ bool NewLights::onKey(String &key, json::JsonParser &parser) {
 // Class : LightStateChange ////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-void LightStateChange::setOn(bool turned_on) {
+LightStateChange &LightStateChange::setOn(bool turned_on) {
   String key = "on";
   add(key, turned_on);
+  return *this;
 }
 
 
-void LightStateChange::setBrightness(uint8_t brightness) {
+LightStateChange &LightStateChange::setBrightness(uint8_t brightness) {
   String key = "bri";
   add(key, (int) brightness);
+  return *this;
 }
 
 
-void LightStateChange::setHue(uint16_t hue) {
+LightStateChange &LightStateChange::setHue(uint16_t hue) {
   String key = "hue";
   add(key, (int) hue);
+  return *this;
 }
 
 
-void LightStateChange::setSaturation(uint8_t saturation) {
+LightStateChange &LightStateChange::setSaturation(uint8_t saturation) {
   String key = "sat";
   add(key, (int) saturation);
+  return *this;
 }
 
 
-void LightStateChange::setColorTemp(uint16_t color_temp) {
+LightStateChange &LightStateChange::setColorTemp(uint16_t color_temp) {
   String key = "ct";
   add(key, (int) color_temp);
+  return *this;
 }
 
 
-void LightStateChange::setTransitionTime(uint16_t time_in_tenths_of_seconds) {
+LightStateChange &LightStateChange::setTransitionTime(uint16_t time_in_tenths_of_seconds) {
   String key = "transitiontime";
   add(key, (int) time_in_tenths_of_seconds);
+  return *this;
 }
 
 
-void LightStateChange::incrementBrightness(uint8_t brightness_increment) {
+LightStateChange &LightStateChange::incrementBrightness(uint8_t brightness_increment) {
   String key = "bri_inc";
   add(key, (int) brightness_increment);
+  return *this;
 }
 
 
-void LightStateChange::decrementBrightness(uint8_t brightness_decrement) {
+LightStateChange &LightStateChange::decrementBrightness(uint8_t brightness_decrement) {
   String key = "bri_inc";
   add(key, (int) -brightness_decrement);
+  return *this;
 }
 
 
-void LightStateChange::incrementSaturation(uint8_t saturation_increment) {
+LightStateChange &LightStateChange::incrementSaturation(uint8_t saturation_increment) {
   String key = "sat_inc";
   add(key, (int) saturation_increment);
+  return *this;
 }
 
 
-void LightStateChange::decrementSaturation(uint8_t saturation_decrement) {
+LightStateChange &LightStateChange::decrementSaturation(uint8_t saturation_decrement) {
   String key = "sat_inc";
   add(key, (int) -saturation_decrement);
+  return *this;
 }
 
 
-void LightStateChange::incrementHue(uint16_t hue_increment) {
+LightStateChange &LightStateChange::incrementHue(uint16_t hue_increment) {
   String key = "hue_inc";
   add(key, (int) hue_increment);
+  return *this;
 }
 
 
-void LightStateChange::decrementHue(uint16_t hue_decrement) {
+LightStateChange &LightStateChange::decrementHue(uint16_t hue_decrement) {
   String key = "hue_inc";
   add(key, (int) -hue_decrement);
+  return *this;
 }
 
 
-void LightStateChange::incrementColorTemp(uint16_t color_temp_increment) {
+LightStateChange &LightStateChange::incrementColorTemp(uint16_t color_temp_increment) {
   String key = "ct_inc";
   add(key, (int) color_temp_increment);
+  return *this;
 }
 
 
-void LightStateChange::decrementColorTemp(uint16_t color_temp_decrement) {
+LightStateChange &LightStateChange::decrementColorTemp(uint16_t color_temp_decrement) {
   String key = "ct_inc";
   add(key, (int) -color_temp_decrement);
+  return *this;
 }
 
 
