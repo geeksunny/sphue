@@ -312,79 +312,79 @@ void LightStateChange::setOn(bool turned_on) {
 
 void LightStateChange::setBrightness(uint8_t brightness) {
   String key = "bri";
-  add(key, brightness);
+  add(key, (int) brightness);
 }
 
 
 void LightStateChange::setHue(uint16_t hue) {
   String key = "hue";
-  add(key, hue);
+  add(key, (int) hue);
 }
 
 
 void LightStateChange::setSaturation(uint8_t saturation) {
   String key = "sat";
-  add(key, saturation);
+  add(key, (int) saturation);
 }
 
 
 void LightStateChange::setColorTemp(uint16_t color_temp) {
   String key = "ct";
-  add(key, color_temp);
+  add(key, (int) color_temp);
 }
 
 
 void LightStateChange::setTransitionTime(uint16_t time_in_tenths_of_seconds) {
   String key = "transitiontime";
-  add(key, time_in_tenths_of_seconds);
+  add(key, (int) time_in_tenths_of_seconds);
 }
 
 
 void LightStateChange::incrementBrightness(uint8_t brightness_increment) {
   String key = "bri_inc";
-  add(key, brightness_increment);
+  add(key, (int) brightness_increment);
 }
 
 
 void LightStateChange::decrementBrightness(uint8_t brightness_decrement) {
   String key = "bri_inc";
-  add(key, -brightness_decrement);
+  add(key, (int) -brightness_decrement);
 }
 
 
 void LightStateChange::incrementSaturation(uint8_t saturation_increment) {
   String key = "sat_inc";
-  add(key, saturation_increment);
+  add(key, (int) saturation_increment);
 }
 
 
 void LightStateChange::decrementSaturation(uint8_t saturation_decrement) {
   String key = "sat_inc";
-  add(key, -saturation_decrement);
+  add(key, (int) -saturation_decrement);
 }
 
 
 void LightStateChange::incrementHue(uint16_t hue_increment) {
   String key = "hue_inc";
-  add(key, hue_increment);
+  add(key, (int) hue_increment);
 }
 
 
 void LightStateChange::decrementHue(uint16_t hue_decrement) {
   String key = "hue_inc";
-  add(key, -hue_decrement);
+  add(key, (int) -hue_decrement);
 }
 
 
 void LightStateChange::incrementColorTemp(uint16_t color_temp_increment) {
   String key = "ct_inc";
-  add(key, color_temp_increment);
+  add(key, (int) color_temp_increment);
 }
 
 
 void LightStateChange::decrementColorTemp(uint16_t color_temp_decrement) {
   String key = "ct_inc";
-  add(key, -color_temp_decrement);
+  add(key, (int) -color_temp_decrement);
 }
 
 

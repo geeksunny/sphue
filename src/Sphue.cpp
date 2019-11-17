@@ -232,7 +232,8 @@ Response<RegisterResponse> Sphue::registerDeviceApiKey(const char *deviceName, c
   json::JsonObject json;
   // TODO: Consider possible refactors for JSON and HTTP client libraries for more efficient memory patterns.
   String key = String(CREATE_USER_KEY_DEVICETYPE);
-  json.add(key, String(applicationName) + "#" + String(deviceName));
+  String value = String(applicationName) + "#" + String(deviceName);
+  json.add(key, value);
   auto result = client_.post(ENDPOINT_CREATE_USER, json.toJson().c_str());
   Response<RegisterResponse> response;
   parseFirstResponse(result, response);
