@@ -154,20 +154,20 @@ class LightStateChange : public json::JsonObject {
   // String alert;
   // String effect;
  public:
-  LightStateChange &setOn(bool turned_on);
-  LightStateChange &setBrightness(uint8_t brightness);
-  LightStateChange &setHue(uint16_t hue);
-  LightStateChange &setSaturation(uint8_t saturation);
-  LightStateChange &setColorTemp(uint16_t color_temp);
-  LightStateChange &setTransitionTime(uint16_t time_in_tenths_of_seconds);
-  LightStateChange &incrementBrightness(uint8_t brightness_increment);
-  LightStateChange &decrementBrightness(uint8_t brightness_decrement);
-  LightStateChange &incrementSaturation(uint8_t saturation_increment);
-  LightStateChange &decrementSaturation(uint8_t saturation_decrement);
-  LightStateChange &incrementHue(uint16_t hue_increment);
-  LightStateChange &decrementHue(uint16_t hue_decrement);
-  LightStateChange &incrementColorTemp(uint16_t color_temp_increment);
-  LightStateChange &decrementColorTemp(uint16_t color_temp_decrement);
+  void setOn(bool turned_on);
+  void setBrightness(uint8_t brightness);
+  void setHue(uint16_t hue);
+  void setSaturation(uint8_t saturation);
+  void setColorTemp(uint16_t color_temp);
+  void setTransitionTime(uint16_t time_in_tenths_of_seconds);
+  void incrementBrightness(uint8_t brightness_increment);
+  void decrementBrightness(uint8_t brightness_decrement);
+  void incrementSaturation(uint8_t saturation_increment);
+  void decrementSaturation(uint8_t saturation_decrement);
+  void incrementHue(uint16_t hue_increment);
+  void decrementHue(uint16_t hue_decrement);
+  void incrementColorTemp(uint16_t color_temp_increment);
+  void decrementColorTemp(uint16_t color_temp_decrement);
 };
 
 class Group : public json::JsonModel {
@@ -250,30 +250,26 @@ class Group : public json::JsonModel {
 
 typedef ParsedIntMap<Group> Groups;
 
-class GroupCreationRequest : public BuildableObject {
- public:
-  GroupCreationRequest &addLight(int light_id);
-  GroupCreationRequest &removeLight(int light_id);
-  GroupCreationRequest &setName(String &name);
-  GroupCreationRequest &setType(Group::Type type);
-  GroupCreationRequest &setRoomClass(Group::Class a_class);
-  void build() override;
- private:
-  json::JsonArray<json::JsonString> lights_;
-};
-
 class GroupAttributeChange : public BuildableObject {
  public:
-  GroupAttributeChange &addLight(int light_id);
-  GroupAttributeChange &removeLight(int light_id);
-  GroupAttributeChange &setName(String &name);
-  GroupAttributeChange &setRoomClass(Group::Class a_class);
+  void addLight(int light_id);
+  void removeLight(int light_id);
+  void setName(String &name);
+  virtual void setRoomClass(Group::Class a_class);
   void build() override;
  private:
   json::JsonArray<json::JsonString> lights_;
 };
 
-class GroupStateChange : public json::JsonObject {
+class GroupCreationRequest : public GroupAttributeChange {
+ public:
+  void setType(Group::Type type);
+  void setRoomClass(Group::Class a_class) override;
+};
+
+class GroupStateChange : public LightStateChange {
+ public:
+  void setScene(String &scene);
 };
 
 class Scene : public json::JsonModel {

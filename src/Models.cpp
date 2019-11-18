@@ -304,101 +304,87 @@ bool NewLights::onKey(String &key, json::JsonParser &parser) {
 // Class : LightStateChange ////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-LightStateChange &LightStateChange::setOn(bool turned_on) {
+void LightStateChange::setOn(bool turned_on) {
   String key = "on";
   add(key, turned_on);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::setBrightness(uint8_t brightness) {
+void LightStateChange::setBrightness(uint8_t brightness) {
   String key = "bri";
   add(key, (int) brightness);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::setHue(uint16_t hue) {
+void LightStateChange::setHue(uint16_t hue) {
   String key = "hue";
   add(key, (int) hue);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::setSaturation(uint8_t saturation) {
+void LightStateChange::setSaturation(uint8_t saturation) {
   String key = "sat";
   add(key, (int) saturation);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::setColorTemp(uint16_t color_temp) {
+void LightStateChange::setColorTemp(uint16_t color_temp) {
   String key = "ct";
   add(key, (int) color_temp);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::setTransitionTime(uint16_t time_in_tenths_of_seconds) {
+void LightStateChange::setTransitionTime(uint16_t time_in_tenths_of_seconds) {
   String key = "transitiontime";
   add(key, (int) time_in_tenths_of_seconds);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::incrementBrightness(uint8_t brightness_increment) {
+void LightStateChange::incrementBrightness(uint8_t brightness_increment) {
   String key = "bri_inc";
   add(key, (int) brightness_increment);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::decrementBrightness(uint8_t brightness_decrement) {
+void LightStateChange::decrementBrightness(uint8_t brightness_decrement) {
   String key = "bri_inc";
   add(key, (int) -brightness_decrement);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::incrementSaturation(uint8_t saturation_increment) {
+void LightStateChange::incrementSaturation(uint8_t saturation_increment) {
   String key = "sat_inc";
   add(key, (int) saturation_increment);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::decrementSaturation(uint8_t saturation_decrement) {
+void LightStateChange::decrementSaturation(uint8_t saturation_decrement) {
   String key = "sat_inc";
   add(key, (int) -saturation_decrement);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::incrementHue(uint16_t hue_increment) {
+void LightStateChange::incrementHue(uint16_t hue_increment) {
   String key = "hue_inc";
   add(key, (int) hue_increment);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::decrementHue(uint16_t hue_decrement) {
+void LightStateChange::decrementHue(uint16_t hue_decrement) {
   String key = "hue_inc";
   add(key, (int) -hue_decrement);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::incrementColorTemp(uint16_t color_temp_increment) {
+void LightStateChange::incrementColorTemp(uint16_t color_temp_increment) {
   String key = "ct_inc";
   add(key, (int) color_temp_increment);
-  return *this;
 }
 
 
-LightStateChange &LightStateChange::decrementColorTemp(uint16_t color_temp_decrement) {
+void LightStateChange::decrementColorTemp(uint16_t color_temp_decrement) {
   String key = "ct_inc";
   add(key, (int) -color_temp_decrement);
-  return *this;
 }
 
 
@@ -591,33 +577,51 @@ bool Group::onKey(String &key, json::JsonParser &parser) {
 
 
 ////////////////////////////////////////////////////////////////
-// Class : GroupCreationRequest ////////////////////////////////
+// Class : GroupAttributeChange ////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-GroupCreationRequest &GroupCreationRequest::addLight(int light_id) {
+void GroupAttributeChange::addLight(int light_id) {
   String light_string(light_id);
   json::JsonString value(light_string);
   lights_.add(value);
-  return *this;
 }
 
 
-GroupCreationRequest &GroupCreationRequest::removeLight(int light_id) {
+void GroupAttributeChange::removeLight(int light_id) {
   String light_string(light_id);
   json::JsonString value(light_string);
   lights_.remove(value);
-  return *this;
 }
 
 
-GroupCreationRequest &GroupCreationRequest::setName(String &name) {
+void GroupAttributeChange::setName(String &name) {
   String key = "name";
   add(key, name);
-  return *this;
 }
 
 
-GroupCreationRequest &GroupCreationRequest::setType(Group::Type type) {
+void GroupAttributeChange::setRoomClass(Group::Class a_class) {
+  String key = "class";
+  String value = Group::classToString(a_class);
+  add(key, value);
+}
+
+
+void GroupAttributeChange::build() {
+  String key = "lights";
+  if (has(key)) {
+    // TODO: Equality check before remove?
+    remove(key);
+  }
+  add(key, lights_);
+}
+
+
+////////////////////////////////////////////////////////////////
+// Class : GroupCreationRequest ////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+void GroupCreationRequest::setType(Group::Type type) {
   String key = "type";
   String type_string = Group::typeToString(type);
   add(key, type_string);
@@ -627,11 +631,10 @@ GroupCreationRequest &GroupCreationRequest::setType(Group::Type type) {
       remove(key);
     }
   }
-  return *this;
 }
 
 
-GroupCreationRequest &GroupCreationRequest::setRoomClass(Group::Class a_class) {
+void GroupCreationRequest::setRoomClass(Group::Class a_class) {
   // Set type to ROOM
   String key = "type";
   Group::Type type = Group::Type::ROOM;
@@ -641,60 +644,16 @@ GroupCreationRequest &GroupCreationRequest::setRoomClass(Group::Class a_class) {
   key = "class";
   value = Group::classToString(a_class);
   add(key, value);
-  return *this;
-}
-
-
-void GroupCreationRequest::build() {
-  String key = "lights";
-  if (has(key)) {
-    remove(key);
-  }
-  add(key, lights_);
 }
 
 
 ////////////////////////////////////////////////////////////////
-// Class : GroupAttributeChange ////////////////////////////////
+// Class : GroupStateChange ////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-GroupAttributeChange &GroupAttributeChange::addLight(int light_id) {
-  String light_string(light_id);
-  json::JsonString value(light_string);
-  lights_.add(value);
-  return *this;
-}
-
-
-GroupAttributeChange &GroupAttributeChange::removeLight(int light_id) {
-  String light_string(light_id);
-  json::JsonString value(light_string);
-  lights_.remove(value);
-  return *this;
-}
-
-
-GroupAttributeChange &GroupAttributeChange::setName(String &name) {
-  String key = "name";
-  add(key, name);
-  return *this;
-}
-
-
-GroupAttributeChange &GroupAttributeChange::setRoomClass(Group::Class a_class) {
-  String key = "class";
-  String value = Group::classToString(a_class);
-  add(key, value);
-  return *this;
-}
-
-
-void GroupAttributeChange::build() {
-  String key = "lights";
-  if (has(key)) {
-    remove(key);
-  }
-  add(key, lights_);
+void GroupStateChange::setScene(String &scene) {
+  String key = "scene";
+  add(key, scene);
 }
 
 
