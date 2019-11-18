@@ -724,4 +724,83 @@ bool Scene::onKey(String &key, json::JsonParser &parser) {
   return false;
 }
 
+////////////////////////////////////////////////////////////////
+// Class : SceneAttributeChange ////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+void SceneAttributeChange::addLight(int light_id) {
+  String light_string(light_id);
+  json::JsonString value(light_string);
+  lights_.add(value);
+}
+
+
+void SceneAttributeChange::removeLight(int light_id) {
+  String light_string(light_id);
+  json::JsonString value(light_string);
+  lights_.remove(value);
+}
+
+
+void SceneAttributeChange::setName(String &name) {
+  String key = "name";
+  add(key, name);
+}
+
+
+void SceneAttributeChange::setStoreLightState(bool store_light_state) {
+  String key = "storelightstate";
+  add(key, store_light_state);
+}
+
+
+void SceneAttributeChange::build() {
+  String key = "lights";
+  if (has(key)) {
+    // TODO: Equality check before remove?
+    remove(key);
+  }
+  add(key, lights_);
+}
+
+
+////////////////////////////////////////////////////////////////
+// Class : SceneStateChange ////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+void SceneStateChange::setOn(bool turned_on) {
+  String key = "on";
+  add(key, turned_on);
+}
+
+
+void SceneStateChange::setBrightness(uint8_t brightness) {
+  String key = "bri";
+  add(key, (int) brightness);
+}
+
+
+void SceneStateChange::setHue(uint16_t hue) {
+  String key = "hue";
+  add(key, (int) hue);
+}
+
+
+void SceneStateChange::setSaturation(uint8_t saturation) {
+  String key = "sat";
+  add(key, (int) saturation);
+}
+
+
+void SceneStateChange::setColorTemp(uint16_t color_temp) {
+  String key = "ct";
+  add(key, (int) color_temp);
+}
+
+
+void SceneStateChange::setTransitionTime(uint16_t time_in_tenths_of_seconds) {
+  String key = "transitiontime";
+  add(key, (int) time_in_tenths_of_seconds);
+}
+
 }

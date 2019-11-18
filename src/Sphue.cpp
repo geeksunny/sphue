@@ -220,7 +220,7 @@ Response<Scene> Sphue::getScene(int id) {
   return get<Scene>(ENDPOINT_SCENES, id);
 }
 
-std::vector<Response<NamedValue>> Sphue::modifyScene(int id, SceneAttributeChange &change) {
+std::vector<Response<NamedValue>> Sphue::modifyScene(int id, SceneModificationRequest &change) {
   return post(&change, ENDPOINT_SCENES, id);
 }
 

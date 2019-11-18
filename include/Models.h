@@ -61,11 +61,12 @@ class ParsedStringMap : public ParsedMap<String, T> {
   }
 };
 
-class BuildableObject : public json::JsonObject {
+template<typename T = json::JsonObject>
+class BuildableObject : public T {
  public:
   String toJson() override {
     build();
-    return JsonObject::toJson();
+    return T::toJson();
   }
  private:
   virtual void build() = 0;
@@ -250,7 +251,7 @@ class Group : public json::JsonModel {
 
 typedef ParsedIntMap<Group> Groups;
 
-class GroupAttributeChange : public BuildableObject {
+class GroupAttributeChange : public BuildableObject<> {
  public:
   void addLight(int light_id);
   void removeLight(int light_id);
@@ -308,7 +309,31 @@ typedef ParsedStringMap<Scene> Scenes;
 class SceneCreationRequest : public json::JsonObject {
 };
 
-class SceneAttributeChange : public json::JsonObject {
+class SceneModificationRequest : public json::JsonObject {};
+
+class SceneAttributeChange : public BuildableObject<SceneModificationRequest> {
+ public:
+  void addLight(int light_id);
+  void removeLight(int light_id);
+  void setName(String &name);
+  // TODO: "lightstates": {"#":{lightstate_object}, ...}
+  void setStoreLightState(bool store_light_state);
+  void build() override;
+ private:
+  json::JsonArray<json::JsonString> lights_;
+};
+
+class SceneStateChange : public SceneModificationRequest {
+  // The following fields have been omitted for simplicity. They can be added in later if desired. //
+  // float xy[2];
+  // String effect;
+ public:
+  void setOn(bool turned_on);
+  void setBrightness(uint8_t brightness);
+  void setHue(uint16_t hue);
+  void setSaturation(uint8_t saturation);
+  void setColorTemp(uint16_t color_temp);
+  void setTransitionTime(uint16_t time_in_tenths_of_seconds);
 };
 
 }

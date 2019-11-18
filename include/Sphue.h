@@ -142,7 +142,7 @@ class Sphue {
   Response<Scenes> getAllScenes();
   Response<NamedValue> createScene(SceneCreationRequest &request);
   Response<Scene> getScene(int id);
-  std::vector<Response<NamedValue>> modifyScene(int id, SceneAttributeChange &change);
+  std::vector<Response<NamedValue>> modifyScene(int id, SceneModificationRequest &change);
   Response<String> deleteScene(int id);
 
   // Configuration API
