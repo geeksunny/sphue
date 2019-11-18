@@ -1,5 +1,6 @@
 #include "Sphue.h"
 #include <sstream>
+#include "prog_str.h"
 
 #ifdef SPHUE_EXAMPLE_PROJECT
 #include <iostream>
@@ -10,13 +11,16 @@
 #define DISCOVER_PORT                       443
 // API Endpoints
 // - Create User
-#define ENDPOINT_LIGHTS                     "lights"
-#define ENDPOINT_GROUPS                     "groups"
-#define ENDPOINT_SCENES                     "scenes"
 #define ENDPOINT_CREATE_USER                "/api"
 #define CREATE_USER_KEY_DEVICETYPE          "devicetype"
 
 namespace sphue {
+
+namespace strings {
+const char endpoint_lights[] PROGMEM = "lights";
+const char endpoint_groups[] PROGMEM = "groups";
+const char endpoint_scenes[] PROGMEM = "scenes";
+}
 
 inline const char *copyCStr(const char *str) {
   char *copy = new char[strlen(str) + 1]{};
@@ -154,78 +158,96 @@ Response<String> Sphue::del(Endpoint... args) {
 }
 
 Response<Lights> Sphue::getAllLights() {
-  return get<Lights>(ENDPOINT_LIGHTS);
+  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  return get<Lights>(endpoint);
 }
 
 Response<NewLights> Sphue::getNewLights() {
-  return get<NewLights>(ENDPOINT_LIGHTS, "new");
+  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  return get<NewLights>(endpoint, "new");
 }
 
 Response<NamedValue> Sphue::searchForNewLights() {
-  return post<NamedValue>(nullptr, ENDPOINT_LIGHTS);
+  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  return post<NamedValue>(nullptr, endpoint);
 }
 
 Response<Light> Sphue::getLight(int id) {
-  return get<Light>(ENDPOINT_LIGHTS, id);
+  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  return get<Light>(endpoint, id);
 }
 
 Response<NamedValue> Sphue::renameLight(int id, String &new_name) {
   json::JsonObject json;
   String key = "name";
   json.add(key, new_name);
-  return post<NamedValue>(&json, ENDPOINT_LIGHTS, id);
+  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  return post<NamedValue>(&json, endpoint, id);
 }
 
 std::vector<Response<NamedValue>> Sphue::setLightState(int id, LightStateChange &change) {
-  return put(&change, ENDPOINT_LIGHTS, id, "state");
+  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  return put(&change, endpoint, id, "state");
 }
 
 Response<String> Sphue::deleteLight(int id) {
-  return del(ENDPOINT_LIGHTS, id);
+  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  return del(endpoint, id);
 }
 
 Response<Groups> Sphue::getAllGroups() {
-  return get<Groups>(ENDPOINT_GROUPS);
+  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  return get<Groups>(endpoint);
 }
 
 Response<NamedValue> Sphue::createGroup(GroupCreationRequest &request) {
-  return post<NamedValue>(&request, ENDPOINT_GROUPS);
+  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  return post<NamedValue>(&request, endpoint);
 }
 
 Response<Group> Sphue::getGroup(int id) {
-  return get<Group>(ENDPOINT_GROUPS, id);
+  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  return get<Group>(endpoint, id);
 }
 
 std::vector<Response<NamedValue>> Sphue::setGroupAttributes(int id, GroupAttributeChange &change) {
-  return post(&change, ENDPOINT_GROUPS, id);
+  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  return post(&change, endpoint, id);
 }
 
 std::vector<Response<NamedValue>> Sphue::setGroupState(int id, GroupStateChange &change) {
-  return put(&change, ENDPOINT_GROUPS, id, "action");
+  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  return put(&change, endpoint, id, "action");
 }
 
 Response<String> Sphue::deleteGroup(int id) {
-  return del(ENDPOINT_GROUPS, id);
+  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  return del(endpoint, id);
 }
 
 Response<Scenes> Sphue::getAllScenes() {
-  return get<Scenes>(ENDPOINT_SCENES);
+  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  return get<Scenes>(endpoint);
 }
 
 Response<NamedValue> Sphue::createScene(SceneCreationRequest &request) {
-  return post<NamedValue>(&request, ENDPOINT_SCENES);
+  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  return post<NamedValue>(&request, endpoint);
 }
 
 Response<Scene> Sphue::getScene(int id) {
-  return get<Scene>(ENDPOINT_SCENES, id);
+  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  return get<Scene>(endpoint, id);
 }
 
 std::vector<Response<NamedValue>> Sphue::modifyScene(int id, SceneModificationRequest &change) {
-  return post(&change, ENDPOINT_SCENES, id);
+  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  return post(&change, endpoint, id);
 }
 
 Response<String> Sphue::deleteScene(int id) {
-  return del(ENDPOINT_SCENES, id);
+  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  return del(endpoint, id);
 }
 
 Response<RegisterResponse> Sphue::registerDeviceApiKey(const char *deviceName, const char *applicationName) {
