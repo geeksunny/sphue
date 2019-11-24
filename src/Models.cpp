@@ -142,31 +142,6 @@ const bool NamedValue::getBool() const {
 
 
 ////////////////////////////////////////////////////////////////
-// Class : ParsedMap ///////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-
-template<typename K, typename T>
-std::map<K, T> &ParsedMap<K, T>::operator*() {
-  return values_;
-}
-
-
-template<typename K, typename T>
-const std::map<K, T> &ParsedMap<K, T>::operator*() const {
-  return values_;
-}
-
-
-template<typename K, typename T>
-bool ParsedMap<K, T>::onKey(String &key, json::JsonParser &parser) {
-  T value;
-  bool success = parser.get(value);
-  values_[getKey(key)] = value;
-  return success;
-}
-
-
-////////////////////////////////////////////////////////////////
 // Class : DiscoveryResponse ///////////////////////////////////
 ////////////////////////////////////////////////////////////////
 

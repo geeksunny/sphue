@@ -36,13 +36,22 @@ class NamedValue : public json::JsonModel {
 template<typename K, typename T>
 class ParsedMap : public json::JsonModel {
  public:
-  std::map<K, T> &operator*();
-  const std::map<K, T> &operator*() const;
+  std::map<K, T> &operator*() {
+    return values_;
+  }
+  const std::map<K, T> &operator*() const {
+    return values_;
+  }
  protected:
   std::map<K, T> values_;
   virtual inline K getKey(String &from) = 0;
  private:
-  bool onKey(String &key, json::JsonParser &parser) override;
+  bool onKey(String &key, json::JsonParser &parser) override {
+    T value;
+    bool success = parser.get(value);
+    values_[getKey(key)] = value;
+    return success;
+  }
 };
 
 template<typename T>
