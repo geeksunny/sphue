@@ -158,22 +158,22 @@ Response<String> Sphue::del(Endpoint... args) {
 }
 
 Response<Lights> Sphue::getAllLights() {
-  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_lights);
   return get<Lights>(endpoint);
 }
 
 Response<NewLights> Sphue::getNewLights() {
-  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_lights);
   return get<NewLights>(endpoint, "new");
 }
 
 Response<NamedValue> Sphue::searchForNewLights() {
-  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_lights);
   return post<NamedValue>(nullptr, endpoint);
 }
 
 Response<Light> Sphue::getLight(int id) {
-  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_lights);
   return get<Light>(endpoint, id);
 }
 
@@ -181,72 +181,72 @@ Response<NamedValue> Sphue::renameLight(int id, String &new_name) {
   json::JsonObject json;
   String key = "name";
   json.add(key, new_name);
-  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_lights);
   return post<NamedValue>(&json, endpoint, id);
 }
 
 std::vector<Response<NamedValue>> Sphue::setLightState(int id, LightStateChange &change) {
-  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_lights);
   return put(&change, endpoint, id, "state");
 }
 
 Response<String> Sphue::deleteLight(int id) {
-  READ_PROG_STR(strings::endpoint_lights, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_lights);
   return del(endpoint, id);
 }
 
 Response<Groups> Sphue::getAllGroups() {
-  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_groups);
   return get<Groups>(endpoint);
 }
 
 Response<NamedValue> Sphue::createGroup(GroupCreationRequest &request) {
-  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_groups);
   return post<NamedValue>(&request, endpoint);
 }
 
 Response<Group> Sphue::getGroup(int id) {
-  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_groups);
   return get<Group>(endpoint, id);
 }
 
 std::vector<Response<NamedValue>> Sphue::setGroupAttributes(int id, GroupAttributeChange &change) {
-  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_groups);
   return post(&change, endpoint, id);
 }
 
 std::vector<Response<NamedValue>> Sphue::setGroupState(int id, GroupStateChange &change) {
-  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_groups);
   return put(&change, endpoint, id, "action");
 }
 
 Response<String> Sphue::deleteGroup(int id) {
-  READ_PROG_STR(strings::endpoint_groups, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_groups);
   return del(endpoint, id);
 }
 
 Response<Scenes> Sphue::getAllScenes() {
-  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_scenes);
   return get<Scenes>(endpoint);
 }
 
 Response<NamedValue> Sphue::createScene(SceneCreationRequest &request) {
-  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_scenes);
   return post<NamedValue>(&request, endpoint);
 }
 
 Response<Scene> Sphue::getScene(int id) {
-  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_scenes);
   return get<Scene>(endpoint, id);
 }
 
 std::vector<Response<NamedValue>> Sphue::modifyScene(int id, SceneModificationRequest &change) {
-  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_scenes);
   return post(&change, endpoint, id);
 }
 
 Response<String> Sphue::deleteScene(int id) {
-  READ_PROG_STR(strings::endpoint_scenes, endpoint)
+  String endpoint = read_prog_str(strings::endpoint_scenes);
   return del(endpoint, id);
 }
 
