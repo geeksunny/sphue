@@ -1,8 +1,7 @@
 #include "Models.h"
 #include <ctime>
-#include "prog_str.h"
+#include "EnumTools.hpp"
 
-#define CASE_RETURN(case_value, return_progmem_str)     case case_value: return read_prog_str(return_progmem_str)
 #define IF_EQ_RET(str, progmem_str, return_value)       if (str == read_prog_str(progmem_str)) { return return_value; }
 
 namespace sphue {
@@ -449,119 +448,111 @@ void LightStateChange::decrementColorTemp(uint16_t color_temp_decrement) {
 ////////////////////////////////////////////////////////////////
 
 Group::Type Group::typeFromString(String &string) {
-  IF_EQ_RET(string, strings::luminaire, Type::LUMINAIRE)
-  IF_EQ_RET(string, strings::lightsource, Type::LIGHTSOURCE)
-  IF_EQ_RET(string, strings::light_group, Type::LIGHT_GROUP)
-  IF_EQ_RET(string, strings::room, Type::ROOM)
-  IF_EQ_RET(string, strings::entertainment, Type::ENTERTAINMENT)
-  IF_EQ_RET(string, strings::zone, Type::ZONE)
-  // else
-  return Type::UNKNOWN;
+  RETURN_PGM_STRING_TO_ENUM(string.c_str(), Type::UNKNOWN,
+                            strings::luminaire, Type::LUMINAIRE,
+                            strings::lightsource, Type::LIGHTSOURCE,
+                            strings::light_group, Type::LIGHT_GROUP,
+                            strings::room, Type::ROOM,
+                            strings::entertainment, Type::ENTERTAINMENT,
+                            strings::zone, Type::ZONE)
 }
 
 String Group::typeToString(Group::Type &type) {
-  switch (type) {
-    CASE_RETURN(Type::LUMINAIRE, strings::luminaire);
-    CASE_RETURN(Type::LIGHTSOURCE, strings::lightsource);
-    CASE_RETURN(Type::LIGHT_GROUP, strings::light_group);
-    CASE_RETURN(Type::ROOM, strings::room);
-    CASE_RETURN(Type::ENTERTAINMENT, strings::entertainment);
-    CASE_RETURN(Type::ZONE, strings::zone);
-    default:
-      return read_prog_str(strings::unknown);
-  }
+  RETURN_ENUM_TO_PGM_STRING(type, strings::unknown,
+                            Type::LUMINAIRE, strings::luminaire,
+                            Type::LIGHTSOURCE, strings::lightsource,
+                            Type::LIGHT_GROUP, strings::light_group,
+                            Type::ROOM, strings::room,
+                            Type::ENTERTAINMENT, strings::entertainment,
+                            Type::ZONE, strings::zone)
 }
 
 Group::Class Group::classFromString(String &string) {
-  IF_EQ_RET(string, strings::living_room, Class::LIVING_ROOM)
-  IF_EQ_RET(string, strings::kitchen, Class::KITCHEN)
-  IF_EQ_RET(string, strings::dining, Class::DINING)
-  IF_EQ_RET(string, strings::bedroom, Class::BEDROOM)
-  IF_EQ_RET(string, strings::kids_bedroom, Class::KIDS_BEDROOM)
-  IF_EQ_RET(string, strings::bathroom, Class::BATHROOM)
-  IF_EQ_RET(string, strings::nursery, Class::NURSERY)
-  IF_EQ_RET(string, strings::recreation, Class::RECREATION)
-  IF_EQ_RET(string, strings::office, Class::OFFICE)
-  IF_EQ_RET(string, strings::gym, Class::GYM)
-  IF_EQ_RET(string, strings::hallway, Class::HALLWAY)
-  IF_EQ_RET(string, strings::toilet, Class::TOILET)
-  IF_EQ_RET(string, strings::front_door, Class::FRONT_DOOR)
-  IF_EQ_RET(string, strings::garage, Class::GARAGE)
-  IF_EQ_RET(string, strings::terrace, Class::TERRACE)
-  IF_EQ_RET(string, strings::garden, Class::GARDEN)
-  IF_EQ_RET(string, strings::driveway, Class::DRIVEWAY)
-  IF_EQ_RET(string, strings::carport, Class::CARPORT)
-  IF_EQ_RET(string, strings::other, Class::OTHER)
-  IF_EQ_RET(string, strings::home, Class::HOME)
-  IF_EQ_RET(string, strings::downstairs, Class::DOWNSTAIRS)
-  IF_EQ_RET(string, strings::upstairs, Class::UPSTAIRS)
-  IF_EQ_RET(string, strings::top_floor, Class::TOP_FLOOR)
-  IF_EQ_RET(string, strings::attic, Class::ATTIC)
-  IF_EQ_RET(string, strings::guest_room, Class::GUEST_ROOM)
-  IF_EQ_RET(string, strings::staircase, Class::STAIRCASE)
-  IF_EQ_RET(string, strings::lounge, Class::LOUNGE)
-  IF_EQ_RET(string, strings::man_cave, Class::MAN_CAVE)
-  IF_EQ_RET(string, strings::computer, Class::COMPUTER)
-  IF_EQ_RET(string, strings::studio, Class::STUDIO)
-  IF_EQ_RET(string, strings::music, Class::MUSIC)
-  IF_EQ_RET(string, strings::tv, Class::TV)
-  IF_EQ_RET(string, strings::reading, Class::READING)
-  IF_EQ_RET(string, strings::closet, Class::CLOSET)
-  IF_EQ_RET(string, strings::storage, Class::STORAGE)
-  IF_EQ_RET(string, strings::laundry_room, Class::LAUNDRY_ROOM)
-  IF_EQ_RET(string, strings::balcony, Class::BALCONY)
-  IF_EQ_RET(string, strings::porch, Class::PORCH)
-  IF_EQ_RET(string, strings::barbecue, Class::BARBECUE)
-  IF_EQ_RET(string, strings::pool, Class::POOL)
-  // else
-  return Class::UNKNOWN;
+  RETURN_PGM_STRING_TO_ENUM(string.c_str(), Class::UNKNOWN,
+                            strings::living_room, Class::LIVING_ROOM,
+                            strings::kitchen, Class::KITCHEN,
+                            strings::dining, Class::DINING,
+                            strings::bedroom, Class::BEDROOM,
+                            strings::kids_bedroom, Class::KIDS_BEDROOM,
+                            strings::bathroom, Class::BATHROOM,
+                            strings::nursery, Class::NURSERY,
+                            strings::recreation, Class::RECREATION,
+                            strings::office, Class::OFFICE,
+                            strings::gym, Class::GYM,
+                            strings::hallway, Class::HALLWAY,
+                            strings::toilet, Class::TOILET,
+                            strings::front_door, Class::FRONT_DOOR,
+                            strings::garage, Class::GARAGE,
+                            strings::terrace, Class::TERRACE,
+                            strings::garden, Class::GARDEN,
+                            strings::driveway, Class::DRIVEWAY,
+                            strings::carport, Class::CARPORT,
+                            strings::other, Class::OTHER,
+                            strings::home, Class::HOME,
+                            strings::downstairs, Class::DOWNSTAIRS,
+                            strings::upstairs, Class::UPSTAIRS,
+                            strings::top_floor, Class::TOP_FLOOR,
+                            strings::attic, Class::ATTIC,
+                            strings::guest_room, Class::GUEST_ROOM,
+                            strings::staircase, Class::STAIRCASE,
+                            strings::lounge, Class::LOUNGE,
+                            strings::man_cave, Class::MAN_CAVE,
+                            strings::computer, Class::COMPUTER,
+                            strings::studio, Class::STUDIO,
+                            strings::music, Class::MUSIC,
+                            strings::tv, Class::TV,
+                            strings::reading, Class::READING,
+                            strings::closet, Class::CLOSET,
+                            strings::storage, Class::STORAGE,
+                            strings::laundry_room, Class::LAUNDRY_ROOM,
+                            strings::balcony, Class::BALCONY,
+                            strings::porch, Class::PORCH,
+                            strings::barbecue, Class::BARBECUE,
+                            strings::pool, Class::POOL)
 }
 
 String Group::classToString(Group::Class &a_class) {
-  switch (a_class) {
-    CASE_RETURN(Class::LIVING_ROOM, strings::living_room);
-    CASE_RETURN(Class::KITCHEN, strings::kitchen);
-    CASE_RETURN(Class::DINING, strings::dining);
-    CASE_RETURN(Class::BEDROOM, strings::bedroom);
-    CASE_RETURN(Class::KIDS_BEDROOM, strings::kids_bedroom);
-    CASE_RETURN(Class::BATHROOM, strings::bathroom);
-    CASE_RETURN(Class::NURSERY, strings::nursery);
-    CASE_RETURN(Class::RECREATION, strings::recreation);
-    CASE_RETURN(Class::OFFICE, strings::office);
-    CASE_RETURN(Class::GYM, strings::gym);
-    CASE_RETURN(Class::HALLWAY, strings::hallway);
-    CASE_RETURN(Class::TOILET, strings::toilet);
-    CASE_RETURN(Class::FRONT_DOOR, strings::front_door);
-    CASE_RETURN(Class::GARAGE, strings::garage);
-    CASE_RETURN(Class::TERRACE, strings::terrace);
-    CASE_RETURN(Class::GARDEN, strings::garden);
-    CASE_RETURN(Class::DRIVEWAY, strings::driveway);
-    CASE_RETURN(Class::CARPORT, strings::carport);
-    CASE_RETURN(Class::OTHER, strings::other);
-    CASE_RETURN(Class::HOME, strings::home);
-    CASE_RETURN(Class::DOWNSTAIRS, strings::downstairs);
-    CASE_RETURN(Class::UPSTAIRS, strings::upstairs);
-    CASE_RETURN(Class::TOP_FLOOR, strings::top_floor);
-    CASE_RETURN(Class::ATTIC, strings::attic);
-    CASE_RETURN(Class::GUEST_ROOM, strings::guest_room);
-    CASE_RETURN(Class::STAIRCASE, strings::staircase);
-    CASE_RETURN(Class::LOUNGE, strings::lounge);
-    CASE_RETURN(Class::MAN_CAVE, strings::man_cave);
-    CASE_RETURN(Class::COMPUTER, strings::computer);
-    CASE_RETURN(Class::STUDIO, strings::studio);
-    CASE_RETURN(Class::MUSIC, strings::music);
-    CASE_RETURN(Class::TV, strings::tv);
-    CASE_RETURN(Class::READING, strings::reading);
-    CASE_RETURN(Class::CLOSET, strings::closet);
-    CASE_RETURN(Class::STORAGE, strings::storage);
-    CASE_RETURN(Class::LAUNDRY_ROOM, strings::laundry_room);
-    CASE_RETURN(Class::BALCONY, strings::balcony);
-    CASE_RETURN(Class::PORCH, strings::porch);
-    CASE_RETURN(Class::BARBECUE, strings::barbecue);
-    CASE_RETURN(Class::POOL, strings::pool);
-    default:
-      return read_prog_str(strings::unknown);
-  }
+  RETURN_ENUM_TO_PGM_STRING(a_class, strings::unknown,
+                            Class::LIVING_ROOM, strings::living_room,
+                            Class::KITCHEN, strings::kitchen,
+                            Class::DINING, strings::dining,
+                            Class::BEDROOM, strings::bedroom,
+                            Class::KIDS_BEDROOM, strings::kids_bedroom,
+                            Class::BATHROOM, strings::bathroom,
+                            Class::NURSERY, strings::nursery,
+                            Class::RECREATION, strings::recreation,
+                            Class::OFFICE, strings::office,
+                            Class::GYM, strings::gym,
+                            Class::HALLWAY, strings::hallway,
+                            Class::TOILET, strings::toilet,
+                            Class::FRONT_DOOR, strings::front_door,
+                            Class::GARAGE, strings::garage,
+                            Class::TERRACE, strings::terrace,
+                            Class::GARDEN, strings::garden,
+                            Class::DRIVEWAY, strings::driveway,
+                            Class::CARPORT, strings::carport,
+                            Class::OTHER, strings::other,
+                            Class::HOME, strings::home,
+                            Class::DOWNSTAIRS, strings::downstairs,
+                            Class::UPSTAIRS, strings::upstairs,
+                            Class::TOP_FLOOR, strings::top_floor,
+                            Class::ATTIC, strings::attic,
+                            Class::GUEST_ROOM, strings::guest_room,
+                            Class::STAIRCASE, strings::staircase,
+                            Class::LOUNGE, strings::lounge,
+                            Class::MAN_CAVE, strings::man_cave,
+                            Class::COMPUTER, strings::computer,
+                            Class::STUDIO, strings::studio,
+                            Class::MUSIC, strings::music,
+                            Class::TV, strings::tv,
+                            Class::READING, strings::reading,
+                            Class::CLOSET, strings::closet,
+                            Class::STORAGE, strings::storage,
+                            Class::LAUNDRY_ROOM, strings::laundry_room,
+                            Class::BALCONY, strings::balcony,
+                            Class::PORCH, strings::porch,
+                            Class::BARBECUE, strings::barbecue,
+                            Class::POOL, strings::pool)
 }
 
 
@@ -711,19 +702,15 @@ void GroupStateChange::setScene(String &scene) {
 ////////////////////////////////////////////////////////////////
 
 Scene::Type Scene::typeFromString(String &string) {
-  IF_EQ_RET(string, strings::light_scene, Type::LIGHT_SCENE)
-  IF_EQ_RET(string, strings::group_scene, Type::GROUP_SCENE);
-  // else
-  return Type::UNKNOWN;
+  RETURN_PGM_STRING_TO_ENUM(string.c_str(), Type::UNKNOWN,
+                            strings::light_scene, Type::LIGHT_SCENE,
+                            strings::group_scene, Type::GROUP_SCENE)
 }
 
 String Scene::typeToString(Scene::Type &type) {
-  switch (type) {
-    CASE_RETURN(Type::LIGHT_SCENE, strings::light_scene);
-    CASE_RETURN(Type::GROUP_SCENE, strings::group_scene);
-    default:
-      return read_prog_str(strings::unknown);
-  }
+  RETURN_ENUM_TO_PGM_STRING(type, strings::unknown,
+                            Type::LIGHT_SCENE, strings::light_scene,
+                            Type::GROUP_SCENE, strings::group_scene)
 }
 
 const String &Scene::name() const {
