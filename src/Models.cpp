@@ -1,8 +1,7 @@
 #include "Models.h"
 #include <ctime>
+#include "PgmStringTools.hpp"
 #include "EnumTools.hpp"
-
-#define IF_EQ_RET(str, progmem_str, return_value)       if (str == read_prog_str(progmem_str)) { return return_value; }
 
 namespace sphue {
 
@@ -240,8 +239,12 @@ const bool NamedValue::getBool() const {
 ////////////////////////////////////////////////////////////////
 
 bool DiscoveryResponse::onKey(String &key, json::JsonParser &parser) {
-  IF_EQ_RET(key, strings::key_id, parser.get(id_))
-  IF_EQ_RET(key, strings::key_internalipaddress, parser.get(ip_))
+  STR_EQ_INIT(key.c_str(),
+              SL(strings::key_id),
+              SL(strings::key_internalipaddress)
+  )
+  STR_EQ_RET(strings::key_id, parser.get(id_))
+  STR_EQ_RET(strings::key_internalipaddress, parser.get(ip_))
   return false;
 }
 
@@ -290,12 +293,20 @@ const String &Light::uniqueid() const {
 
 
 bool State::onKey(String &key, json::JsonParser &parser) {
-  IF_EQ_RET(key, strings::key_on, parser.get(on_))
-  IF_EQ_RET(key, strings::key_bri, parser.get(bri_))
-  IF_EQ_RET(key, strings::key_hue, parser.get(hue_))
-  IF_EQ_RET(key, strings::key_sat, parser.get(sat_))
-  IF_EQ_RET(key, strings::key_ct, parser.get(ct_))
-  IF_EQ_RET(key, strings::key_reachable, parser.get(reachable_))
+  STR_EQ_INIT(key.c_str(),
+              SL(strings::key_on),
+              SL(strings::key_bri),
+              SL(strings::key_hue),
+              SL(strings::key_sat),
+              SL(strings::key_ct),
+              SL(strings::key_reachable)
+  )
+  STR_EQ_RET(strings::key_on, parser.get(on_))
+  STR_EQ_RET(strings::key_bri, parser.get(bri_))
+  STR_EQ_RET(strings::key_hue, parser.get(hue_))
+  STR_EQ_RET(strings::key_sat, parser.get(sat_))
+  STR_EQ_RET(strings::key_ct, parser.get(ct_))
+  STR_EQ_RET(strings::key_reachable, parser.get(reachable_))
   return false;
 }
 
@@ -305,9 +316,14 @@ bool State::onKey(String &key, json::JsonParser &parser) {
 ////////////////////////////////////////////////////////////////
 
 bool Light::onKey(String &key, json::JsonParser &parser) {
-  IF_EQ_RET(key, strings::key_state, parser.get(state_))
-  IF_EQ_RET(key, strings::key_name, parser.get(name_))
-  IF_EQ_RET(key, strings::key_uniqueid, parser.get(uniqueid_))
+  STR_EQ_INIT(key.c_str(),
+              SL(strings::key_state),
+              SL(strings::key_name),
+              SL(strings::key_uniqueid)
+  )
+  STR_EQ_RET(strings::key_state, parser.get(state_))
+  STR_EQ_RET(strings::key_name, parser.get(name_))
+  STR_EQ_RET(strings::key_uniqueid, parser.get(uniqueid_))
   return false;
 }
 
@@ -552,26 +568,38 @@ const State &Group::action() const {
 
 
 bool Group::onKey(String &key, json::JsonParser &parser) {
-  IF_EQ_RET(key, strings::key_name, parser.get(name_))
-  IF_EQ_RET(key, strings::key_lights, parseArrayOfIntStrings(parser, lights_))
-  IF_EQ_RET(key, strings::key_sensors, parseArrayOfIntStrings(parser, sensors_))
-  if (key == read_prog_str(strings::key_type)) {
+  STR_EQ_INIT(key.c_str(),
+              SL(strings::key_name),
+              SL(strings::key_lights),
+              SL(strings::key_sensors),
+              SL(strings::key_type),
+              SL(strings::key_state),
+              SL(strings::key_all_on),
+              SL(strings::key_any_on),
+              SL(strings::key_recycle),
+              SL(strings::key_class),
+              SL(strings::key_action)
+  )
+  STR_EQ_RET(strings::key_name, parser.get(name_))
+  STR_EQ_RET(strings::key_lights, parseArrayOfIntStrings(parser, lights_))
+  STR_EQ_RET(strings::key_sensors, parseArrayOfIntStrings(parser, sensors_))
+  STR_EQ_DO(strings::key_type, {
     String type;
     bool success = parser.get(type);
     type_ = typeFromString(type);
     return success;
-  }
-  IF_EQ_RET(key, strings::key_state, parser.get(*this))
-  IF_EQ_RET(key, strings::key_all_on, parser.get(all_on_))
-  IF_EQ_RET(key, strings::key_any_on, parser.get(any_on_))
-  IF_EQ_RET(key, strings::key_recycle, parser.get(recycle_))
-  if (key == read_prog_str(strings::key_class)) {
+  })
+  STR_EQ_RET(strings::key_state, parser.get(*this))
+  STR_EQ_RET(strings::key_all_on, parser.get(all_on_))
+  STR_EQ_RET(strings::key_any_on, parser.get(any_on_))
+  STR_EQ_RET(strings::key_recycle, parser.get(recycle_))
+  STR_EQ_DO(strings::key_class, {
     String a_class;
     bool success = parser.get(a_class);
     class_ = classFromString(a_class);
     return success;
-  }
-  IF_EQ_RET(key, strings::key_action, parser.get(action_))
+  })
+  STR_EQ_RET(strings::key_action, parser.get(action_))
   return false;
 }
 
@@ -699,22 +727,30 @@ bool Scene::locked() const {
 }
 
 bool Scene::onKey(String &key, json::JsonParser &parser) {
-  IF_EQ_RET(key, strings::key_name, parser.get(name_))
-  if (key == read_prog_str(strings::key_type)) {
+  STR_EQ_INIT(key.c_str(),
+              SL(strings::key_name),
+              SL(strings::key_type),
+              SL(strings::key_group),
+              SL(strings::key_lights),
+              SL(strings::key_recycle),
+              SL(strings::key_locked)
+  )
+  STR_EQ_RET(strings::key_name, parser.get(name_))
+  STR_EQ_DO(strings::key_type, {
     String type;
     bool success = parser.get(type);
     type_ = typeFromString(type);
     return success;
-  }
-  if (key == read_prog_str(strings::key_group)) {
+  })
+  STR_EQ_DO(strings::key_group, {
     String group;
     bool success = parser.get(group);
     group_ = group.toInt();
     return success;
-  }
-  IF_EQ_RET(key, strings::key_lights, parseArrayOfIntStrings(parser, lights_))
-  IF_EQ_RET(key, strings::key_recycle, parser.get(recycle_))
-  IF_EQ_RET(key, strings::key_locked, parser.get(locked_))
+  })
+  STR_EQ_RET(strings::key_lights, parseArrayOfIntStrings(parser, lights_))
+  STR_EQ_RET(strings::key_recycle, parser.get(recycle_))
+  STR_EQ_RET(strings::key_locked, parser.get(locked_))
   return false;
 }
 
