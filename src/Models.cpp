@@ -239,10 +239,7 @@ const bool NamedValue::getBool() const {
 ////////////////////////////////////////////////////////////////
 
 bool DiscoveryResponse::onKey(String &key, json::JsonParser &parser) {
-  STR_EQ_INIT(key.c_str(),
-              SL(strings::key_id),
-              SL(strings::key_internalipaddress)
-  )
+  STR_EQ_INIT(key.c_str())
   STR_EQ_RET(strings::key_id, parser.get(id_))
   STR_EQ_RET(strings::key_internalipaddress, parser.get(ip_))
   return false;
@@ -293,14 +290,7 @@ const String &Light::uniqueid() const {
 
 
 bool State::onKey(String &key, json::JsonParser &parser) {
-  STR_EQ_INIT(key.c_str(),
-              SL(strings::key_on),
-              SL(strings::key_bri),
-              SL(strings::key_hue),
-              SL(strings::key_sat),
-              SL(strings::key_ct),
-              SL(strings::key_reachable)
-  )
+  STR_EQ_INIT(key.c_str())
   STR_EQ_RET(strings::key_on, parser.get(on_))
   STR_EQ_RET(strings::key_bri, parser.get(bri_))
   STR_EQ_RET(strings::key_hue, parser.get(hue_))
@@ -316,11 +306,7 @@ bool State::onKey(String &key, json::JsonParser &parser) {
 ////////////////////////////////////////////////////////////////
 
 bool Light::onKey(String &key, json::JsonParser &parser) {
-  STR_EQ_INIT(key.c_str(),
-              SL(strings::key_state),
-              SL(strings::key_name),
-              SL(strings::key_uniqueid)
-  )
+  STR_EQ_INIT(key.c_str())
   STR_EQ_RET(strings::key_state, parser.get(state_))
   STR_EQ_RET(strings::key_name, parser.get(name_))
   STR_EQ_RET(strings::key_uniqueid, parser.get(uniqueid_))
@@ -568,18 +554,7 @@ const State &Group::action() const {
 
 
 bool Group::onKey(String &key, json::JsonParser &parser) {
-  STR_EQ_INIT(key.c_str(),
-              SL(strings::key_name),
-              SL(strings::key_lights),
-              SL(strings::key_sensors),
-              SL(strings::key_type),
-              SL(strings::key_state),
-              SL(strings::key_all_on),
-              SL(strings::key_any_on),
-              SL(strings::key_recycle),
-              SL(strings::key_class),
-              SL(strings::key_action)
-  )
+  STR_EQ_INIT(key.c_str())
   STR_EQ_RET(strings::key_name, parser.get(name_))
   STR_EQ_RET(strings::key_lights, parseArrayOfIntStrings(parser, lights_))
   STR_EQ_RET(strings::key_sensors, parseArrayOfIntStrings(parser, sensors_))
@@ -727,14 +702,7 @@ bool Scene::locked() const {
 }
 
 bool Scene::onKey(String &key, json::JsonParser &parser) {
-  STR_EQ_INIT(key.c_str(),
-              SL(strings::key_name),
-              SL(strings::key_type),
-              SL(strings::key_group),
-              SL(strings::key_lights),
-              SL(strings::key_recycle),
-              SL(strings::key_locked)
-  )
+  STR_EQ_INIT(key.c_str())
   STR_EQ_RET(strings::key_name, parser.get(name_))
   STR_EQ_DO(strings::key_type, {
     String type;
