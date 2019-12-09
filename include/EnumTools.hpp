@@ -27,11 +27,11 @@ constexpr std::array<EnumMapping<Enum>, sizeof...(Mappings)> make_mapping(Mappin
   return {{mappings...}};
 }
 
-#define MAPPING(enum_value, pgm_string) EnumMapping<decltype(enum_value)>{ enum_value, pgm_string, sizeof(pgm_string) }
+#define PGM_STR_AND_SIZE(pgm_string) pgm_string, sizeof(pgm_string)
+
+#define MAPPING(enum_value, pgm_string) EnumMapping<decltype(enum_value)>{ enum_value, PGM_STR_AND_SIZE(pgm_string) }
 
 #define MAKE_ENUM_MAP(mapping_name, enum_type, ...) constexpr auto mapping_name = make_mapping<enum_type>(__VA_ARGS__);
-
-#define PGM_STR_AND_SIZE(pgm_string) pgm_string, sizeof(pgm_string)
 
 template<typename Enum, std::size_t N>
 constexpr int get_buffer_size(const std::array<EnumMapping<Enum>, N> &mapping, int index) {

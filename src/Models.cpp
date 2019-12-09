@@ -205,7 +205,7 @@ const String &NamedValue::getName() const {
 }
 
 
-const String NamedValue::getFullName() const {
+String NamedValue::getFullName() const {
   if (prefix_) {
     return *prefix_.get() + name_;
   } else {
@@ -219,17 +219,17 @@ const String &NamedValue::getString() const {
 }
 
 
-const int NamedValue::getInt() const {
+int NamedValue::getInt() const {
   return value_.toInt();
 }
 
 
-const float NamedValue::getFloat() const {
+float NamedValue::getFloat() const {
   return value_.toFloat();
 }
 
 
-const bool NamedValue::getBool() const {
+bool NamedValue::getBool() const {
   return value_ == "1";
 }
 

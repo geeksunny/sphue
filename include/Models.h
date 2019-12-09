@@ -20,11 +20,11 @@ class NamedValue : public json::JsonModel {
   const String &getPrefix() const;
   Type getType() const;
   const String &getName() const;
-  const String getFullName() const;
+  String getFullName() const;
   const String &getString() const;
-  const int getInt() const;
-  const float getFloat() const;
-  const bool getBool() const;
+  int getInt() const;
+  float getFloat() const;
+  bool getBool() const;
  private:
   std::shared_ptr<String> prefix_;
   Type type_ = Type::UNKNOWN;
