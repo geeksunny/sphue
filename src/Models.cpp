@@ -447,112 +447,72 @@ void LightStateChange::decrementColorTemp(uint16_t color_temp_decrement) {
 // Class : Group ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
+MAKE_ENUM_MAP(group_type_map, Group::Type,
+              MAPPING(Group::Type::LUMINAIRE, strings::luminaire),
+              MAPPING(Group::Type::LIGHTSOURCE, strings::lightsource),
+              MAPPING(Group::Type::LIGHT_GROUP, strings::light_group),
+              MAPPING(Group::Type::ROOM, strings::room),
+              MAPPING(Group::Type::ENTERTAINMENT, strings::entertainment),
+              MAPPING(Group::Type::ZONE, strings::zone)
+)
+
 Group::Type Group::typeFromString(String &string) {
-  RETURN_PGM_STRING_TO_ENUM(string.c_str(), Type::UNKNOWN,
-                            strings::luminaire, Type::LUMINAIRE,
-                            strings::lightsource, Type::LIGHTSOURCE,
-                            strings::light_group, Type::LIGHT_GROUP,
-                            strings::room, Type::ROOM,
-                            strings::entertainment, Type::ENTERTAINMENT,
-                            strings::zone, Type::ZONE)
+  return pgm_string_to_enum(string.c_str(), Type::UNKNOWN, group_type_map);
 }
 
 String Group::typeToString(Group::Type &type) {
-  RETURN_ENUM_TO_PGM_STRING(type, strings::unknown,
-                            Type::LUMINAIRE, strings::luminaire,
-                            Type::LIGHTSOURCE, strings::lightsource,
-                            Type::LIGHT_GROUP, strings::light_group,
-                            Type::ROOM, strings::room,
-                            Type::ENTERTAINMENT, strings::entertainment,
-                            Type::ZONE, strings::zone)
+  return enum_to_pgm_string(type, PGM_STR_AND_SIZE(strings::unknown), group_type_map);
 }
 
+MAKE_ENUM_MAP(group_class_map, Group::Class,
+              MAPPING(Group::Class::LIVING_ROOM, strings::living_room),
+              MAPPING(Group::Class::KITCHEN, strings::kitchen),
+              MAPPING(Group::Class::DINING, strings::dining),
+              MAPPING(Group::Class::BEDROOM, strings::bedroom),
+              MAPPING(Group::Class::KIDS_BEDROOM, strings::kids_bedroom),
+              MAPPING(Group::Class::BATHROOM, strings::bathroom),
+              MAPPING(Group::Class::NURSERY, strings::nursery),
+              MAPPING(Group::Class::RECREATION, strings::recreation),
+              MAPPING(Group::Class::OFFICE, strings::office),
+              MAPPING(Group::Class::GYM, strings::gym),
+              MAPPING(Group::Class::HALLWAY, strings::hallway),
+              MAPPING(Group::Class::TOILET, strings::toilet),
+              MAPPING(Group::Class::FRONT_DOOR, strings::front_door),
+              MAPPING(Group::Class::GARAGE, strings::garage),
+              MAPPING(Group::Class::TERRACE, strings::terrace),
+              MAPPING(Group::Class::GARDEN, strings::garden),
+              MAPPING(Group::Class::DRIVEWAY, strings::driveway),
+              MAPPING(Group::Class::CARPORT, strings::carport),
+              MAPPING(Group::Class::OTHER, strings::other),
+              MAPPING(Group::Class::HOME, strings::home),
+              MAPPING(Group::Class::DOWNSTAIRS, strings::downstairs),
+              MAPPING(Group::Class::UPSTAIRS, strings::upstairs),
+              MAPPING(Group::Class::TOP_FLOOR, strings::top_floor),
+              MAPPING(Group::Class::ATTIC, strings::attic),
+              MAPPING(Group::Class::GUEST_ROOM, strings::guest_room),
+              MAPPING(Group::Class::STAIRCASE, strings::staircase),
+              MAPPING(Group::Class::LOUNGE, strings::lounge),
+              MAPPING(Group::Class::MAN_CAVE, strings::man_cave),
+              MAPPING(Group::Class::COMPUTER, strings::computer),
+              MAPPING(Group::Class::STUDIO, strings::studio),
+              MAPPING(Group::Class::MUSIC, strings::music),
+              MAPPING(Group::Class::TV, strings::tv),
+              MAPPING(Group::Class::READING, strings::reading),
+              MAPPING(Group::Class::CLOSET, strings::closet),
+              MAPPING(Group::Class::STORAGE, strings::storage),
+              MAPPING(Group::Class::LAUNDRY_ROOM, strings::laundry_room),
+              MAPPING(Group::Class::BALCONY, strings::balcony),
+              MAPPING(Group::Class::PORCH, strings::porch),
+              MAPPING(Group::Class::BARBECUE, strings::barbecue),
+              MAPPING(Group::Class::POOL, strings::pool)
+)
+
 Group::Class Group::classFromString(String &string) {
-  RETURN_PGM_STRING_TO_ENUM(string.c_str(), Class::UNKNOWN,
-                            strings::living_room, Class::LIVING_ROOM,
-                            strings::kitchen, Class::KITCHEN,
-                            strings::dining, Class::DINING,
-                            strings::bedroom, Class::BEDROOM,
-                            strings::kids_bedroom, Class::KIDS_BEDROOM,
-                            strings::bathroom, Class::BATHROOM,
-                            strings::nursery, Class::NURSERY,
-                            strings::recreation, Class::RECREATION,
-                            strings::office, Class::OFFICE,
-                            strings::gym, Class::GYM,
-                            strings::hallway, Class::HALLWAY,
-                            strings::toilet, Class::TOILET,
-                            strings::front_door, Class::FRONT_DOOR,
-                            strings::garage, Class::GARAGE,
-                            strings::terrace, Class::TERRACE,
-                            strings::garden, Class::GARDEN,
-                            strings::driveway, Class::DRIVEWAY,
-                            strings::carport, Class::CARPORT,
-                            strings::other, Class::OTHER,
-                            strings::home, Class::HOME,
-                            strings::downstairs, Class::DOWNSTAIRS,
-                            strings::upstairs, Class::UPSTAIRS,
-                            strings::top_floor, Class::TOP_FLOOR,
-                            strings::attic, Class::ATTIC,
-                            strings::guest_room, Class::GUEST_ROOM,
-                            strings::staircase, Class::STAIRCASE,
-                            strings::lounge, Class::LOUNGE,
-                            strings::man_cave, Class::MAN_CAVE,
-                            strings::computer, Class::COMPUTER,
-                            strings::studio, Class::STUDIO,
-                            strings::music, Class::MUSIC,
-                            strings::tv, Class::TV,
-                            strings::reading, Class::READING,
-                            strings::closet, Class::CLOSET,
-                            strings::storage, Class::STORAGE,
-                            strings::laundry_room, Class::LAUNDRY_ROOM,
-                            strings::balcony, Class::BALCONY,
-                            strings::porch, Class::PORCH,
-                            strings::barbecue, Class::BARBECUE,
-                            strings::pool, Class::POOL)
+  return pgm_string_to_enum(string.c_str(), Class::UNKNOWN, group_class_map);
 }
 
 String Group::classToString(Group::Class &a_class) {
-  RETURN_ENUM_TO_PGM_STRING(a_class, strings::unknown,
-                            Class::LIVING_ROOM, strings::living_room,
-                            Class::KITCHEN, strings::kitchen,
-                            Class::DINING, strings::dining,
-                            Class::BEDROOM, strings::bedroom,
-                            Class::KIDS_BEDROOM, strings::kids_bedroom,
-                            Class::BATHROOM, strings::bathroom,
-                            Class::NURSERY, strings::nursery,
-                            Class::RECREATION, strings::recreation,
-                            Class::OFFICE, strings::office,
-                            Class::GYM, strings::gym,
-                            Class::HALLWAY, strings::hallway,
-                            Class::TOILET, strings::toilet,
-                            Class::FRONT_DOOR, strings::front_door,
-                            Class::GARAGE, strings::garage,
-                            Class::TERRACE, strings::terrace,
-                            Class::GARDEN, strings::garden,
-                            Class::DRIVEWAY, strings::driveway,
-                            Class::CARPORT, strings::carport,
-                            Class::OTHER, strings::other,
-                            Class::HOME, strings::home,
-                            Class::DOWNSTAIRS, strings::downstairs,
-                            Class::UPSTAIRS, strings::upstairs,
-                            Class::TOP_FLOOR, strings::top_floor,
-                            Class::ATTIC, strings::attic,
-                            Class::GUEST_ROOM, strings::guest_room,
-                            Class::STAIRCASE, strings::staircase,
-                            Class::LOUNGE, strings::lounge,
-                            Class::MAN_CAVE, strings::man_cave,
-                            Class::COMPUTER, strings::computer,
-                            Class::STUDIO, strings::studio,
-                            Class::MUSIC, strings::music,
-                            Class::TV, strings::tv,
-                            Class::READING, strings::reading,
-                            Class::CLOSET, strings::closet,
-                            Class::STORAGE, strings::storage,
-                            Class::LAUNDRY_ROOM, strings::laundry_room,
-                            Class::BALCONY, strings::balcony,
-                            Class::PORCH, strings::porch,
-                            Class::BARBECUE, strings::barbecue,
-                            Class::POOL, strings::pool)
+  return enum_to_pgm_string(a_class, PGM_STR_AND_SIZE(strings::unknown), group_class_map);
 }
 
 
@@ -701,16 +661,17 @@ void GroupStateChange::setScene(String &scene) {
 // Class : Scene ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
+MAKE_ENUM_MAP(scene_type_map, Scene::Type,
+              MAPPING(Scene::Type::LIGHT_SCENE, strings::light_scene),
+              MAPPING(Scene::Type::GROUP_SCENE, strings::group_scene)
+)
+
 Scene::Type Scene::typeFromString(String &string) {
-  RETURN_PGM_STRING_TO_ENUM(string.c_str(), Type::UNKNOWN,
-                            strings::light_scene, Type::LIGHT_SCENE,
-                            strings::group_scene, Type::GROUP_SCENE)
+  return pgm_string_to_enum(string.c_str(), Scene::Type::UNKNOWN, scene_type_map);
 }
 
 String Scene::typeToString(Scene::Type &type) {
-  RETURN_ENUM_TO_PGM_STRING(type, strings::unknown,
-                            Type::LIGHT_SCENE, strings::light_scene,
-                            Type::GROUP_SCENE, strings::group_scene)
+  return enum_to_pgm_string(type, PGM_STR_AND_SIZE(strings::unknown), scene_type_map);
 }
 
 const String &Scene::name() const {
