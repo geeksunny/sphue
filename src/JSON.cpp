@@ -239,70 +239,53 @@ bool JsonParser::get(bool &dest) {
 
 
 bool JsonParser::get(int &dest) {
-  char next;
-  String value;
-  bool foundExponent = false;
-  while (src_.available()) {
-    next = src_.peek();
-    switch (next) {
-      case '-':
-        if (value.length()) {
-          // Sign was not the first character processed. Abort read.
-          goto CHECK_VALUE;
-        }
-      case '0':
-      case '1':
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-      case '7':
-      case '8':
-      case '9':
-        value.concat(src_.read());
-        break;
-      case 'e':
-      case 'E':
-        foundExponent = true;
-      default:
-        goto CHECK_VALUE;
-    }
+  // Parse the number as into a double, cast result to int on success.
+  double value;
+  if (get(value)) {
+    dest = (int) value;
+    return true;
   }
-  CHECK_VALUE:
-  if (value.length()) {
-    dest = strToInt(value);
-    if (foundExponent) {
-      int exponent;
-      if (getExponent(exponent)) {
-        // TODO: should long be used since std::pow returns double? is long a good alternative to double here?
-        dest = (int) std::pow(dest, exponent);
-      } else {
-        // TODO: should anything happen if getExponent fails?
+  return false;
+}
+
+
+bool JsonParser::get(double &dest) {
+  int value;
+  if (getDigits(value, true)) {
+    // Whole number
+    dest = (double) value;
+    unsigned char next = src_.peek();
+    // Precision
+    if (next == '.') {
+      double precision;
+      if (getPrecision(precision)) {
+        dest += precision;
       }
-      skipValue();
-      return true;
+      next = src_.peek();
     }
+    // Exponent
+    if (next == 'e' || next == 'E') {
+      double exponent;
+      if (getExponent(exponent)) {
+        dest = std::pow(dest, exponent);
+      }
+    }
+    // Finished parsing
+    skipValue();
+    return true;
   }
   skipValue();
   return false;
 }
 
 
-bool JsonParser::getExponent(int &dest) {
-  char next;
+bool JsonParser::getDigits(int &dest, const bool allow_sign) {
   String value;
   while (src_.available()) {
-    next = src_.peek();
-    switch (next) {
-      case 'e':
-      case 'E':
-      case '+':
-        src_.read();
-        break;
+    switch (src_.peek()) {
       case '-':
-        if (value.length()) {
-          // Sign was not the first character processed. Abort read.
+        if (!allow_sign || value.length()) {
+          // Sign not allowed or is not the first character processed. Abort read.
           goto CHECK_VALUE;
         }
       case '0':
@@ -325,6 +308,54 @@ bool JsonParser::getExponent(int &dest) {
   if (value.length()) {
     dest = strToInt(value);
     return true;
+  }
+  return false;
+}
+
+
+bool JsonParser::getExponent(double &dest) {
+  if (src_.available()) {
+    // Skip exponent symbol
+    unsigned char next = src_.peek();
+    if (next == 'e' || next == 'E') {
+      src_.read();
+      next = src_.peek();
+    }
+    // Skip positive sign; It is legal in the exponent and can be ignored.
+    if (next == '+') {
+      src_.read();
+    }
+    // Whole number
+    int value;
+    if (getDigits(value, true)) {
+      dest = (double) value;
+      // Precision
+      if (src_.peek() == '.') {
+        double precision;
+        if (getPrecision(precision)) {
+          dest += precision;
+        }
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
+
+bool JsonParser::getPrecision(double &dest) {
+  if (src_.available()) {
+    if (src_.peek() == '.') {
+      src_.read();
+    }
+    int value;
+    if (getDigits(value, false)) {
+      dest = (double) value;
+      while (dest >= 1.0) {
+        dest /= 10;
+      }
+      return true;
+    }
   }
   return false;
 }

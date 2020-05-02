@@ -59,8 +59,10 @@ class JsonParser {
   bool get(uint16_t &dest) {
     return get((int &) dest);
   }
-//  bool get(double &dest);
-//  bool get(float &dest);
+  bool get(double &dest);
+  bool get(float &dest) {
+    return get((double &) dest);
+  }
   bool get(String &dest);
   //bool getHexString(int &dest);
 
@@ -92,7 +94,9 @@ class JsonParser {
   bool findNextKey(String &dest);
   bool findValue();
 
-  bool getExponent(int &dest);
+  bool getDigits(int &dest, bool allow_sign);
+  bool getExponent(double &dest);
+  bool getPrecision(double &dest);
 };
 
 
