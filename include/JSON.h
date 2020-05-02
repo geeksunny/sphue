@@ -8,7 +8,7 @@
 
 namespace json {
 
-int strToInt(String &value);
+unsigned long strToLong(String &value);
 
 
 class JsonParser;
@@ -52,12 +52,15 @@ class JsonParser {
 
   bool get(JsonModel &dest);
   bool get(bool &dest);
-  bool get(int &dest);
+  bool get(unsigned long &dest);
+  bool get(int &dest) {
+    return get((unsigned long &) dest);
+  }
   bool get(uint8_t &dest) {
-    return get((int &) dest);
+    return get((unsigned long &) dest);
   }
   bool get(uint16_t &dest) {
-    return get((int &) dest);
+    return get((unsigned long &) dest);
   }
   bool get(double &dest);
   bool get(float &dest) {
@@ -94,7 +97,7 @@ class JsonParser {
   bool findNextKey(String &dest);
   bool findValue();
 
-  bool getDigits(int &dest, bool allow_sign);
+  bool getDigits(unsigned long &dest, bool allow_sign);
   bool getExponent(double &dest);
   bool getPrecision(double &dest);
 };

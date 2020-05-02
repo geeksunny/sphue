@@ -10,7 +10,7 @@ std::unique_ptr<T> make_unique( Args&& ...args ) {
 }
 
 
-int strToInt(String &value) {
+unsigned long strToLong(String &value) {
   bool negative = false;
   int result = 0;
   unsigned int i = 0;
@@ -238,11 +238,11 @@ bool JsonParser::get(bool &dest) {
 }
 
 
-bool JsonParser::get(int &dest) {
+bool JsonParser::get(unsigned long &dest) {
   // Parse the number as into a double, cast result to int on success.
   double value;
   if (get(value)) {
-    dest = (int) value;
+    dest = (unsigned long) value;
     return true;
   }
   return false;
@@ -250,7 +250,7 @@ bool JsonParser::get(int &dest) {
 
 
 bool JsonParser::get(double &dest) {
-  int value;
+  unsigned long value;
   if (getDigits(value, true)) {
     // Whole number
     dest = (double) value;
@@ -279,7 +279,7 @@ bool JsonParser::get(double &dest) {
 }
 
 
-bool JsonParser::getDigits(int &dest, const bool allow_sign) {
+bool JsonParser::getDigits(unsigned long &dest, const bool allow_sign) {
   String value;
   while (src_.available()) {
     switch (src_.peek()) {
@@ -306,7 +306,7 @@ bool JsonParser::getDigits(int &dest, const bool allow_sign) {
   }
   CHECK_VALUE:
   if (value.length()) {
-    dest = strToInt(value);
+    dest = strToLong(value);
     return true;
   }
   return false;
@@ -326,7 +326,7 @@ bool JsonParser::getExponent(double &dest) {
       src_.read();
     }
     // Whole number
-    int value;
+    unsigned long value;
     if (getDigits(value, true)) {
       dest = (double) value;
       // Precision
@@ -348,7 +348,7 @@ bool JsonParser::getPrecision(double &dest) {
     if (src_.peek() == '.') {
       src_.read();
     }
-    int value;
+    unsigned long value;
     if (getDigits(value, false)) {
       dest = (double) value;
       while (dest >= 1.0) {
