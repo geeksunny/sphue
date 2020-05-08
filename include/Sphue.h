@@ -3,11 +3,21 @@
 
 #include "Models.h"
 #include <Rested.h>
-
+#include "PgmStringTools.hpp"
 
 #define SPHUE_APP_NAME        "Sphue"
 
 namespace sphue {
+
+namespace strings {
+// JSON keys
+const char key_success[] PROGMEM = "success";
+const char key_error[] PROGMEM = "error";
+// `key_type` is duplicated in Models.cpp - can they be combined easily to save space?
+const char key_type[] PROGMEM = "type";
+const char key_address[] PROGMEM = "address";
+const char key_description[] PROGMEM = "description";
+}
 
 namespace ResultCode {
 const uint16_t UNKNOWN                          = 0;
@@ -98,17 +108,12 @@ class Response : public json::JsonModel {
   }
 
   bool onKey(String &key, json::JsonParser &parser) override {
-    if (key == "success") {
-      return parser.get(result_);
-    } else if (key == "error") {
-      return parser.get(*this);
-    } else if (key == "type") {
-      return parser.get(result_code_);
-    } else if (key == "address") {
-      return parser.get(error_address_);
-    } else if (key == "description") {
-      return parser.get(error_description_);
-    }
+    STR_EQ_INIT(key.c_str())
+    STR_EQ_RET(strings::key_success, parser.get(result_))
+    STR_EQ_RET(strings::key_error, parser.get(*this))
+    STR_EQ_RET(strings::key_type, parser.get(result_code_))
+    STR_EQ_RET(strings::key_address, parser.get(error_address_))
+    STR_EQ_RET(strings::key_description, parser.get(error_description_))
     return false;
   }
 };
