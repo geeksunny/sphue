@@ -68,11 +68,11 @@ class Response : public json::JsonModel {
   }
 
   explicit operator bool() {
-    return result_code_ != ResultCode::OK;
+    return result_code_ == ResultCode::OK;
   }
 
   explicit operator bool() const {
-    return result_code_ != ResultCode::OK;
+    return result_code_ == ResultCode::OK;
   }
 
   uint16_t resultCode() const {
