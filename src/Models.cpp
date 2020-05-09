@@ -301,6 +301,36 @@ bool State::onKey(String &key, json::JsonParser &parser) {
 }
 
 
+bool State::on() const {
+  return on_;
+}
+
+
+uint8_t State::bri() const {
+  return bri_;
+}
+
+
+uint16_t State::hue() const {
+  return hue_;
+}
+
+
+uint8_t State::sat() const {
+  return sat_;
+}
+
+
+uint8_t State::ct() const {
+  return ct_;
+}
+
+
+bool State::reachable() const {
+  return reachable_;
+}
+
+
 ////////////////////////////////////////////////////////////////
 // Class : Light ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////

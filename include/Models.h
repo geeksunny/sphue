@@ -110,7 +110,12 @@ class State : public json::JsonModel {
   // String colormode;
   // String mode;
  public:
-  //
+  bool on() const;
+  uint8_t bri() const;
+  uint16_t hue() const;
+  uint8_t sat() const;
+  uint8_t ct() const;
+  bool reachable() const;
  private:
   bool on_;
   uint8_t bri_;
