@@ -9,7 +9,7 @@
 
 #define STR_EQ_INIT(cstr_ptr)\
   const char *the_str = cstr_ptr;\
-  unsigned int the_str_len = std::strlen(the_str) + 1;\
+  const unsigned int the_str_len = std::strlen(the_str) + 1;\
   char the_buf[the_str_len];
 
 #define STR_EQ_RET(progmem_str, return_value)\

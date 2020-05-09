@@ -71,18 +71,18 @@ class JsonParser {
 
   bool getAsString(String &dest);
 
-  bool findChar(char find, bool skipWhitespace = true);
-  bool findChar(char find, char skipChar, bool skipWhitespace = true);
-  bool findChar(char find, const char *skipChars, bool skipWhitespace = true);
+  bool findChar(unsigned char find, bool skipWhitespace = true);
+  bool findChar(unsigned char find, char skipChar, bool skipWhitespace = true);
+  bool findChar(unsigned char find, const char *skipChars, bool skipWhitespace = true);
 
   JsonValueType checkValueType();
-  JsonValueType checkValueType(char firstChar);
+  static JsonValueType checkValueType(unsigned char firstChar);
 
   bool findArray();
   bool findObject();
 
-  bool peekMatches(char c);
-  bool readMatches(char c);
+  bool peekMatches(unsigned char c);
+  bool readMatches(unsigned char c);
   bool readMatches(const char *value, bool case_sensitive = true);
   bool skipValue();
 

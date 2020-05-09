@@ -57,8 +57,8 @@ bool JsonParser::get(JsonModel &dest) {
 }
 
 
-bool JsonParser::findChar(const char find, const bool skipWhitespace) {
-  char next;
+bool JsonParser::findChar(const unsigned char find, const bool skipWhitespace) {
+  unsigned char next;
   while (src_.available()) {
     next = src_.peek();
     if (skipWhitespace && isspace(next)) {
@@ -72,8 +72,8 @@ bool JsonParser::findChar(const char find, const bool skipWhitespace) {
 }
 
 
-bool JsonParser::findChar(const char find, const char skipChar, const bool skipWhitespace) {
-  char next;
+bool JsonParser::findChar(const unsigned char find, const char skipChar, const bool skipWhitespace) {
+  unsigned char next;
   while (src_.available()) {
     next = src_.peek();
     if (next == skipChar || (skipWhitespace && isspace(next))) {
@@ -87,8 +87,8 @@ bool JsonParser::findChar(const char find, const char skipChar, const bool skipW
 }
 
 
-bool JsonParser::findChar(const char find, const char *skipChars, const bool skipWhitespace) {
-  char next;
+bool JsonParser::findChar(const unsigned char find, const char *skipChars, const bool skipWhitespace) {
+  unsigned char next;
   while (src_.available()) {
     next = src_.peek();
     if (strchr(skipChars, next) != nullptr || (skipWhitespace && isspace(next))) {
@@ -107,7 +107,7 @@ JsonValueType JsonParser::checkValueType() {
 }
 
 
-JsonValueType JsonParser::checkValueType(char firstChar) {
+JsonValueType JsonParser::checkValueType(unsigned char firstChar) {
   switch (firstChar) {
     case '"':
       return STRING;
@@ -154,7 +154,7 @@ bool JsonParser::findNextKey(String &dest) {
 
 
 bool JsonParser::findValue() {
-  char next;
+  unsigned char next;
   while (src_.available()) {
     next = src_.peek();
     if (next == ':' || isspace(next)) {
@@ -168,12 +168,12 @@ bool JsonParser::findValue() {
 }
 
 
-bool JsonParser::peekMatches(char c) {
+bool JsonParser::peekMatches(unsigned char c) {
   return src_.available() && src_.peek() == c;
 }
 
 
-bool JsonParser::readMatches(char c) {
+bool JsonParser::readMatches(unsigned char c) {
   if (src_.available() && src_.peek() == c) {
     src_.read();
     return true;
@@ -183,7 +183,7 @@ bool JsonParser::readMatches(char c) {
 
 
 bool JsonParser::readMatches(const char *value, bool case_sensitive) {
-  char srcNext, valueNext;
+  unsigned char srcNext, valueNext;
   for (int i = 0; value[i] != '\0'; ++i) {
     if (case_sensitive) {
       srcNext = src_.peek();
@@ -366,7 +366,7 @@ bool JsonParser::get(String &dest) {
     return false;
   }
   src_.read();
-  char c;
+  unsigned char c;
   bool ignoreNext = false;
   while (src_.available()) {
     c = src_.read();

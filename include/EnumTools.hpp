@@ -52,7 +52,7 @@ template<typename Enum, std::size_t N>
 inline Enum pgm_string_to_enum(const char *string_value,
                                Enum default_value,
                                const std::array<EnumMapping<Enum>, N> &mapping) {
-  unsigned int buf_len = std::strlen(string_value) + 1;
+  const unsigned int buf_len = std::strlen(string_value) + 1;
   char buf[buf_len];
   for (int i = 0; i < (int) N; ++i) {
     if (mapping[i].length == buf_len && std::strcmp(string_value, read_prog_str(mapping[i].pgm_string, buf)) == 0) {
