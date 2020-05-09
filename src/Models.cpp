@@ -321,7 +321,7 @@ uint8_t State::sat() const {
 }
 
 
-uint8_t State::ct() const {
+uint16_t State::ct() const {
   return ct_;
 }
 

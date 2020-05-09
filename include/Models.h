@@ -114,14 +114,14 @@ class State : public json::JsonModel {
   uint8_t bri() const;
   uint16_t hue() const;
   uint8_t sat() const;
-  uint8_t ct() const;
+  uint16_t ct() const;
   bool reachable() const;
  private:
   bool on_;
   uint8_t bri_;
   uint16_t hue_;
   uint8_t sat_;
-  uint8_t ct_;
+  uint16_t ct_;
   bool reachable_;
   bool onKey(String &key, json::JsonParser &parser) override;
 };
