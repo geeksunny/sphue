@@ -385,6 +385,33 @@ bool JsonParser::get(String &dest) {
   return false;
 }
 
+bool JsonParser::getAsString(String &dest) {
+  switch (checkValueType()) {
+    case STRING:
+      return get(dest);
+    case NUMBER:
+    case BOOL:
+    case NUL: {
+      unsigned char c;
+      while (src_.available()) {
+        c = src_.peek();
+        if (c == ',' || c == '}' || c == ']' || isspace(c)) {
+          // Reached break / end of value. Success on one-or-more characters read into destination String.
+          return dest.length();
+        } else {
+          dest.concat(c);
+        }
+      }
+      return false;
+    }
+    case OBJECT:
+    case ARRAY:
+    case INVALID:
+      // TODO: Not implemented!
+      return false;
+  }
+}
+
 ////////////////////////////////////////////////////////////////
 // Class : JsonString //////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
