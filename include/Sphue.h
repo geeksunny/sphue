@@ -126,6 +126,10 @@ class Sphue {
   const char *getApiKey();
   void setApiKey(const char *apiKey);
 
+  void setInsecure();
+  void setRequireSelfSignedCert(bool require_self_signed_cert);
+  void setSslFingerprint(const char *fingerprint);
+
   // Lights API
   Response<Lights> getAllLights();
   Response<NewLights> getNewLights();
@@ -165,7 +169,8 @@ class Sphue {
   explicit operator bool() const;
 
  private:
-  rested::StreamedBasicRestClient client_;
+  // TODO: Is StreamedSecureRestClient suitable for HTTP (non-SSL) hosts?
+  rested::StreamedSecureRestClient client_;
   const char *apiKey_;
 
   template<typename T>

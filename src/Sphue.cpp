@@ -62,6 +62,18 @@ void Sphue::setApiKey(const char *apiKey) {
   apiKey_ = apiKey;
 }
 
+void Sphue::setInsecure() {
+  client_.setRequireSelfSignedCert(false);
+}
+
+void Sphue::setRequireSelfSignedCert(bool require_self_signed_cert) {
+  client_.setRequireSelfSignedCert(require_self_signed_cert);
+}
+
+void Sphue::setSslFingerprint(const char *fingerprint) {
+  client_.setFingerprint(fingerprint);
+}
+
 template<typename T>
 bool Sphue::parseSingleResponse(Stream &response_stream, Response<T> &dest) {
   json::JsonParser parser(response_stream);
