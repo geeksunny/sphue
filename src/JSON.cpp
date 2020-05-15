@@ -41,6 +41,7 @@ JsonParser::JsonParser(Stream &src) : src_(src) {
 
 bool JsonParser::get(JsonModel &dest) {
   if (findObject()) {
+    src_.read();
     String key;
     while (findNextKey(key)) {
       if (!findValue()) {
@@ -48,6 +49,7 @@ bool JsonParser::get(JsonModel &dest) {
         // TODO: How should we handle this situation? skip to end of object and return false?
       }
       dest.onKey(key, *this);
+      key.clear();
     }
     if (findChar('}')) {
       return true;
@@ -298,7 +300,7 @@ bool JsonParser::getDigits(unsigned long &dest, const bool allow_sign) {
       case '7':
       case '8':
       case '9':
-        value.concat(src_.read());
+        value.concat((char) src_.read());
         break;
       default:
         goto CHECK_VALUE;
@@ -372,18 +374,19 @@ bool JsonParser::get(String &dest) {
     c = src_.read();
     if (c == '\\' && !ignoreNext) {
       ignoreNext = true;
-      dest.concat(c);
+      dest.concat((char) c);
       continue;
     }
     if (c == '"' && !ignoreNext) {
       return true;
     } else {
-      dest.concat(c);
+      dest.concat((char) c);
       ignoreNext = false;
     }
   }
   return false;
 }
+
 
 bool JsonParser::getAsString(String &dest) {
   switch (checkValueType()) {
@@ -399,7 +402,7 @@ bool JsonParser::getAsString(String &dest) {
           // Reached break / end of value. Success on one-or-more characters read into destination String.
           return dest.length();
         } else {
-          dest.concat(c);
+          dest.concat((char) c);
         }
       }
       return false;
