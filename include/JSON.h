@@ -85,6 +85,7 @@ class JsonParser {
   bool readMatches(unsigned char c);
   bool readMatches(const char *value, bool case_sensitive = true);
   bool skipValue();
+  bool findValue();
 
   template<typename T>
   JsonArrayIterator<T> iterateArray() {
@@ -95,7 +96,6 @@ class JsonParser {
   Stream &src_;
 
   bool findNextKey(String &dest);
-  bool findValue();
 
   bool getDigits(unsigned long &dest, bool allow_sign);
   bool getExponent(double &dest);
@@ -115,7 +115,7 @@ class JsonArrayIterator {
   }
 
   bool getNext(T &dest) {
-    bool success = parser_.get(dest);
+    bool success = parser_.findValue() && parser_.get(dest);
     hasNext_ = parser_.findChar(',') && parser_.readMatches(',');
     return success;
   }

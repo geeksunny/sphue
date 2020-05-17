@@ -155,21 +155,6 @@ bool JsonParser::findNextKey(String &dest) {
 }
 
 
-bool JsonParser::findValue() {
-  unsigned char next;
-  while (src_.available()) {
-    next = src_.peek();
-    if (next == ':' || isspace(next)) {
-      // Skipping occurrences of ':' and whitespace characters
-      src_.read();
-    } else {
-      return true;
-    }
-  }
-  return false;
-}
-
-
 bool JsonParser::peekMatches(unsigned char c) {
   return src_.available() && src_.peek() == c;
 }
@@ -213,6 +198,21 @@ bool JsonParser::skipValue() {
         return true;
       default:
         src_.read();
+    }
+  }
+  return false;
+}
+
+
+bool JsonParser::findValue() {
+  unsigned char next;
+  while (src_.available()) {
+    next = src_.peek();
+    if (next == ':' || isspace(next)) {
+      // Skipping occurrences of ':' and whitespace characters
+      src_.read();
+    } else {
+      return true;
     }
   }
   return false;
