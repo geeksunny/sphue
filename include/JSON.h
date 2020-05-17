@@ -54,13 +54,22 @@ class JsonParser {
   bool get(bool &dest);
   bool get(unsigned long &dest);
   bool get(int &dest) {
-    return get((unsigned long &) dest);
+    unsigned long tmp;
+    bool success = get(tmp);
+    dest = tmp;
+    return success;
   }
   bool get(uint8_t &dest) {
-    return get((unsigned long &) dest);
+    unsigned long tmp;
+    bool success = get(tmp);
+    dest = tmp;
+    return success;
   }
   bool get(uint16_t &dest) {
-    return get((unsigned long &) dest);
+    unsigned long tmp;
+    bool success = get(tmp);
+    dest = tmp;
+    return success;
   }
   bool get(double &dest);
   bool get(float &dest) {
