@@ -52,6 +52,7 @@ bool JsonParser::get(JsonModel &dest) {
       key.clear();
     }
     if (findChar('}')) {
+      src_.read();
       return true;
     }
   }
