@@ -94,6 +94,7 @@ class JsonParser {
   bool readMatches(unsigned char c);
   bool readMatches(const char *value, bool case_sensitive = true);
   bool skipValue();
+  bool skipToChar(unsigned char skipTo, bool recursive = true);
   bool findValue();
 
   template<typename T>

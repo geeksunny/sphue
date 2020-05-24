@@ -48,7 +48,10 @@ bool JsonParser::get(JsonModel &dest) {
         // Cannot find a value after this key!
         // TODO: How should we handle this situation? skip to end of object and return false?
       }
-      dest.onKey(key, *this);
+      if (!dest.onKey(key, *this)) {
+        // If dest.onKey fails, skip to the next value.
+        skipValue();
+      }
       key.clear();
     }
     if (findChar('}')) {
@@ -191,15 +194,45 @@ bool JsonParser::readMatches(const char *value, bool case_sensitive) {
 
 
 bool JsonParser::skipValue() {
+  char skipTo;
   while (src_.available()) {
     switch (src_.peek()) {
+      case '{':
+        skipTo = '}';
+        break;
+      case '[':
+        skipTo = ']';
+        break;
       case ',':
       case ']':
       case '}':
         return true;
       default:
         src_.read();
+        continue;
     }
+    if (skipToChar(skipTo), true) {
+      src_.read();
+    } else {
+      break;
+    }
+  }
+  return false;
+}
+
+
+bool JsonParser::skipToChar(unsigned char skipTo, bool recursive) {
+  unsigned char c;
+  while (src_.available()) {
+    c = src_.peek();
+    if (c == skipTo) {
+      return true;
+    } else if (recursive) {
+      if ((c == '{' && !skipToChar('}', true)) || (c == '[' && !skipToChar(']', true))) {
+        break;
+      }
+    }
+    src_.read();
   }
   return false;
 }
