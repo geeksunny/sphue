@@ -211,7 +211,8 @@ bool JsonParser::skipValue() {
         src_.read();
         continue;
     }
-    if (skipToChar(skipTo), true) {
+    src_.read();
+    if (skipToChar(skipTo, true)) {
       src_.read();
     } else {
       break;
@@ -222,13 +223,17 @@ bool JsonParser::skipValue() {
 
 
 bool JsonParser::skipToChar(unsigned char skipTo, bool recursive) {
+  yield();
   unsigned char c;
   while (src_.available()) {
     c = src_.peek();
     if (c == skipTo) {
       return true;
     } else if (recursive) {
-      if ((c == '{' && !skipToChar('}', true)) || (c == '[' && !skipToChar(']', true))) {
+      // If c matches a bracket, read from src_ before performing a recursive skip operation.
+      // TODO: Should this logic be broken out to improve readability?
+      if ((c == '{' && (src_.read(), !skipToChar('}', true))) ||
+          (c == '[' && (src_.read(), !skipToChar(']', true)))) {
         break;
       }
     }
