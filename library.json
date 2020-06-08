@@ -15,6 +15,10 @@
   "platforms": "espressif8266",
   "dependencies": [
     {
+      "name": "especially-useful",
+      "version": "https://github.com/geeksunny/especially-useful.git#master"
+    },
+    {
       "name": "especially-rested",
       "version": "https://github.com/geeksunny/especially-rested.git#master"
     }
