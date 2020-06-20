@@ -482,7 +482,12 @@ void JsonString::setValue(String &value) {
 
 
 String JsonString::toJson() {
-  return "\"" + value_ + "\"";
+  String result{};
+  result.reserve(value_.length() + 2);
+  result.concat('\"');
+  result.concat(value_);
+  result.concat('\"');
+  return result;
 }
 
 
@@ -718,12 +723,18 @@ template<typename SerializableType>
 String JsonArray<SerializableType>::toJson() {
   String result = "[";
   for (auto it = values_.begin(); it != values_.end(); ++it) {
+    String value = (*it)->toJson();
+    // Reserve additional space on result string; Prevent extra reserve operations from happening on each concatenation.
+    unsigned int concat_len = (*it).first.length() + value.length() + 1;
     if (it != values_.begin()) {
-      result += ",";
+      result.reserve(result.length() + concat_len + 1);
+      result += ',';
+    } else {
+      result.reserve(result.length() + concat_len);
     }
-    result += (*it)->toJson();
+    result += value;
   }
-  result += "]";
+  result += ']';
   return result;
 }
 
@@ -793,15 +804,21 @@ int JsonObject::size() {
 String JsonObject::toJson() {
   String result = "{";
   for (auto it = values_.begin(); it != values_.end(); ++it) {
+    String value = (*it).second->toJson();
+    // Reserve additional space on result string; Prevent extra reserve operations from happening on each concatenation.
+    unsigned int concat_len = (*it).first.length() + value.length() + 4;
     if (it != values_.begin()) {
-      result += ",";
+      result.reserve(result.length() + concat_len + 1);
+      result += ',';
+    } else {
+      result.reserve(result.length() + concat_len);
     }
-    result += "\"";
+    result += '\"';
     result += (*it).first;
     result += "\":";
-    result += (*it).second->toJson();
+    result += value;
   }
-  result += "}";
+  result += '}';
   return result;
 }
 
