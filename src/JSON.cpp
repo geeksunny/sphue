@@ -594,9 +594,9 @@ double JsonNumber::getDouble() {
 float JsonNumber::getFloat() {
   switch (type_) {
     case INT:
-      return int_value_;
+      return (float) int_value_;
     case DOUBLE:
-      return double_value_;
+      return (float) double_value_;
     case FLOAT:
       return float_value_;
     default:
@@ -646,9 +646,9 @@ void JsonNumber::setType(JsonNumberType type) {
     }
     case FLOAT: {
       if (type_ == INT) {
-        float_value_ = int_value_;
+        float_value_ = (float) int_value_;
       } else if (type_ == DOUBLE) {
-        float_value_ = double_value_;
+        float_value_ = (float) double_value_;
       }
       break;
     }
@@ -659,13 +659,13 @@ void JsonNumber::setType(JsonNumberType type) {
 String JsonNumber::toJson() {
   switch (type_) {
     case INT:
-      return String(int_value_);
+      return String{int_value_};
     case DOUBLE:
       // TODO: add formatting rules for precision?
-      return String(double_value_);
+      return String{double_value_};
     case FLOAT:
       // TODO: add formatting rules for precision?
-      return String(float_value_);
+      return String{float_value_};
     default:
       return "";
   }
