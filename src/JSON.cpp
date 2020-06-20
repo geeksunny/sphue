@@ -41,6 +41,7 @@ JsonParser::JsonParser(Stream &src) : src_(src) {
 
 
 bool JsonParser::get(JsonModel &dest) {
+  yield();
   if (findObject()) {
     src_.read();
     String key;
@@ -54,6 +55,7 @@ bool JsonParser::get(JsonModel &dest) {
         skipValue();
       }
       key.clear();
+      yield();
     }
     if (findChar('}')) {
       src_.read();
@@ -341,6 +343,7 @@ bool JsonParser::getDigits(unsigned long &dest, const bool allow_sign) {
       case '8':
       case '9':
         value.concat((char) src_.read());
+        yield();
         break;
       default:
         goto CHECK_VALUE;
@@ -415,12 +418,14 @@ bool JsonParser::get(String &dest) {
     if (c == '\\' && !ignoreNext) {
       ignoreNext = true;
       dest.concat((char) c);
+      yield();
       continue;
     }
     if (c == '"' && !ignoreNext) {
       return true;
     } else {
       dest.concat((char) c);
+      yield();
       ignoreNext = false;
     }
   }
@@ -443,6 +448,7 @@ bool JsonParser::getAsString(String &dest) {
           return dest.length();
         } else {
           dest.concat((char) c);
+          yield();
         }
       }
       return false;
@@ -450,6 +456,7 @@ bool JsonParser::getAsString(String &dest) {
     case OBJECT:
     case ARRAY:
     case INVALID:
+    default:
       // TODO: Not implemented!
       return false;
   }
