@@ -447,7 +447,7 @@ bool JsonParser::getAsString(String &dest) {
           // Reached break / end of value. Success on one-or-more characters read into destination String.
           return dest.length();
         } else {
-          dest.concat((char) c);
+          dest.concat((char) src_.read());
           yield();
         }
       }
